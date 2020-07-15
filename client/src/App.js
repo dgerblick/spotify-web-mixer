@@ -13,6 +13,12 @@ export default class App extends Component {
 
     var auth_token = cookies.get('auth_token');
 
+    if (auth_token === undefined) {
+      window.location = 'http://localhost:3001/api/auth';
+    }
+
+    //auth_token.addChangeListener((name, value, options) => {});
+
     axios.defaults.headers.common['Authorization'] =
       'Bearer ' + auth_token.access_token;
 
@@ -33,12 +39,10 @@ export default class App extends Component {
   render() {
     return (
       <div className="App">
-        <a href="http://localhost:3001/api/auth">Login</a>
         <AuthContext.Provider value={this.state.auth_token}>
-          <code>{JSON.stringify(this.state.auth_token)}</code>
-          {'\n'}
           <NowPlaying />
         </AuthContext.Provider>
+        <a href="http://localhost:3001/api/auth">Login</a>
       </div>
     );
   }

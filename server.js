@@ -43,9 +43,7 @@ app.get('/api/callback', (req, res) => {
     )
     .then(data =>
       res
-        .cookie('auth_token', JSON.stringify(data.data), {
-          maxAge: data.data.expires_in * 1000,
-        })
+        .cookie('auth_token', JSON.stringify(data.data))
         .redirect('http://localhost:3000')
     )
     .catch(error => res.send(error));

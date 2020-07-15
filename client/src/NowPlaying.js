@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { AuthContext } from './AuthContext';
+import SongDisplay from './SongDisplay';
 
 export default class NowPlaying extends Component {
   static contextType = AuthContext;
@@ -8,20 +9,20 @@ export default class NowPlaying extends Component {
   constructor() {
     super();
 
-    this.state = { playback: {} };
+    this.state = { track: {} };
   }
 
   componentDidMount() {
     axios
       .get('https://api.spotify.com/v1/me/player/currently-playing')
-      .then(playback => this.setState({ playback }));
+      .then(res => this.setState({ track: res.data.item }));
   }
 
   render() {
     return (
-      <AuthContext.Consumer>
-        {() => JSON.stringify(this.state.playback)}
-      </AuthContext.Consumer>
+      <div className="NowPlaying">
+        <SongDisplay track={this.state.track} />
+      </div>
     );
   }
 }

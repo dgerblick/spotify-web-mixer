@@ -11,3 +11,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.SongDisplay {
+  border: black;
+  border-style: solid;
+  text-align: left;
+  display: inline-block;
+  padding: 20px;
+}
+
+.SongDisplay > img {
+  display: inline-block;
+  vertical-align: middle;
+  padding-right: 40px;
+}
+
+.SongDisplay > .songInfo {
+  display: inline-block;
+  vertical-align: middle;
+}
