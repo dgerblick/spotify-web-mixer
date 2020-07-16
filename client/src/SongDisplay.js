@@ -5,10 +5,10 @@ export default class SongDisplay extends Component {
     super(props);
 
     this.state = {
-      size: props.size || 100,
       img: {},
       title: '',
       artists: [],
+      albumName: '',
     };
   }
 
@@ -18,6 +18,7 @@ export default class SongDisplay extends Component {
         img: this.props.track.album.images[0],
         title: this.props.track.name,
         artists: this.props.track.artists,
+        albumName: this.props.track.album.name,
       });
     }
   }
@@ -25,8 +26,11 @@ export default class SongDisplay extends Component {
   render() {
     return (
       <div className="SongDisplay">
-        <img src={this.state.img.url} width={this.state.size} />
-        <div className="songInfo" style={{ fontSize: this.state.size / 12 }}>
+        <img
+          src={this.state.img.url}
+          alt={this.state.albumName}
+        />
+        <div className="songInfo">
           <h1>{this.state.title}</h1>
           <h1>
             {(artists => {

@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { AuthContext } from './AuthContext';
 import SongDisplay from './SongDisplay';
 
 export default class NowPlaying extends Component {
-  static contextType = AuthContext;
-
   constructor() {
     super();
 
@@ -22,6 +19,25 @@ export default class NowPlaying extends Component {
     return (
       <div className="NowPlaying">
         <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        <SongDisplay track={this.state.track} />
+        
       </div>
     );
   }
