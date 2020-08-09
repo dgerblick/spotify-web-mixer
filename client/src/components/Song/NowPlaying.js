@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import './NowPlaying.scss'
 import SongDisplay from './SongDisplay';
 
 export default class NowPlaying extends Component {

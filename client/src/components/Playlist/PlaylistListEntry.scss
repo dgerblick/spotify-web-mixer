@@ -1,0 +1,45 @@
+@import '../vars';
+
+.PlaylistListEntry {
+  display: inline-block;
+  width: 650px;
+  text-align: left;
+  padding: 25px;
+  margin: 25px;
+  background-color: $dark;
+  border-radius: 25px;
+  transition: all .1s ease-in-out;
+  &:hover {
+    transform: scale(1.1);
+  }
+  img {
+    height: 150px;
+    width: 150px;
+    display: inline-block;
+    padding-right: 30px;
+    vertical-align: middle;
+  }
+  .playlistInfo {
+    font-size: 12px;
+    width: 450px;
+    line-height: 50px;
+    display: inline-block;
+    vertical-align: middle;
+    h1 {
+      overflow: wrap;
+      line-height: 32px;
+    }
+    p {
+      overflow: wrap;
+      line-height: 18px;
+      a {
+        color: $medlight;
+        text-decoration: none;
+        &:hover {
+          color: $meddark;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

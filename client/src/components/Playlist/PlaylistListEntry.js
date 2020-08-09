@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { AllHtmlEntities } from 'html-entities';
+import './PlaylistListEntry.scss'
 
 export default class PlaylistListEntry extends Component {
   constructor(props) {

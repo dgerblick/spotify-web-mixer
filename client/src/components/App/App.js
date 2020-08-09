@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import './App.scss';
-import NowPlaying from './NowPlaying';
-import PlaylistList from './PlaylistList';
+import NowPlaying from '../Song/NowPlaying';
+import PlaylistList from '../Playlist/PlaylistList';
 
 const cookies = new Cookies();
 

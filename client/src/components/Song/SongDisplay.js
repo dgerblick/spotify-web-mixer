@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './SongDisplay.scss'
 
 export default class SongDisplay extends Component {
   constructor(props) {
