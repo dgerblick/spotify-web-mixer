@@ -13,7 +13,10 @@ export default class SongDisplay extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.track.id !== prevProps.track.id) {
+    if (
+      typeof this.props.track !== 'undefined' &&
+      this.props.track.id !== prevProps.track.id
+    ) {
       this.setState({
         img: this.props.track.album.images[0],
         title: this.props.track.name,
@@ -26,10 +29,7 @@ export default class SongDisplay extends Component {
   render() {
     return (
       <div className="SongDisplay">
-        <img
-          src={this.state.img.url}
-          alt={this.state.albumName}
-        />
+        <img src={this.state.img.url} alt={this.state.albumName} />
         <div className="songInfo">
           <h1>{this.state.title}</h1>
           <h1>

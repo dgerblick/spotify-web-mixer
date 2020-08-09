@@ -3,6 +3,7 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 import './App.scss';
 import NowPlaying from './NowPlaying';
+import PlaylistList from './PlaylistList';
 
 const cookies = new Cookies();
 
@@ -37,7 +38,7 @@ export default class App extends Component {
   render() {
     return (
       <div className="App">
-        <NowPlaying />
+        <PlaylistList />
       </div>
     );
   }

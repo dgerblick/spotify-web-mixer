@@ -17,7 +17,7 @@ app.get('/api/auth', (req, res) => {
         client_id: process.env.SPOTIFY_CLIENT_ID,
         response_type: 'code',
         redirect_uri: 'http://localhost:3001/api/callback',
-        scope: 'user-read-private user-read-email user-read-playback-state',
+        scope: 'user-read-private user-read-email user-read-playback-state playlist-read-private',
         show_dialog: true,
       })
   );
