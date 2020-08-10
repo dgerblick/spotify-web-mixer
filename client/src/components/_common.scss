@@ -1,0 +1,28 @@
+// Colors
+$dark: #0a0a0a;
+$meddark: #464646;
+$medlight: #7a7a7a;
+$light: #f8f8f8;
+
+// Responsive
+@mixin responsive($class) {
+  @if $class == xs {
+    @media (max-width: 767px) {
+      @content;
+    }
+  } @else if $class == sm {
+    @media (min-width: 768px) {
+      @content;
+    }
+  } @else if $class == md {
+    @media (min-width: 1366px) {
+      @content;
+    }
+  } @else if $class == lg {
+    @media (min-width: 1920px) {
+      @content;
+    }
+  } @else {
+    @warn "Breakpoint mixin supports: xs, sm, md, lg";
+  }
+}

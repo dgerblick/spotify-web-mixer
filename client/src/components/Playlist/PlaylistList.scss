@@ -1,6 +1,19 @@
-@import '../vars';
+@import '../common';
 
 .PlaylistList {
   text-align: center;
-  margin: 200px;
+  margin: auto;
+  
+  @include responsive(xs) {
+    width: 100%;
+  }
+  @include responsive(sm) {
+    width: 750px;
+  }
+  @include responsive(md) {
+    width: 1200px;
+  }
+  @include responsive(lg) {
+    width: 1200px;
+  }
 }

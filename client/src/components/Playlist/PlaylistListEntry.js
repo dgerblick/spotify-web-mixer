@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { AllHtmlEntities } from 'html-entities';
-import './PlaylistListEntry.scss'
+import './PlaylistListEntry.scss';
 
 export default class PlaylistListEntry extends Component {
   constructor(props) {
@@ -10,7 +10,7 @@ export default class PlaylistListEntry extends Component {
       width: null,
       height: null,
       size: 0,
-      url: 'logo192.png',
+      url: 'logo512.png',
     };
 
     props.data.images.forEach(element => {
@@ -40,7 +40,7 @@ export default class PlaylistListEntry extends Component {
           </a>
         );
       } else {
-        parts[i] = AllHtmlEntities.decode(parts[i])
+        parts[i] = AllHtmlEntities.decode(parts[i]);
       }
     }
     console.log(parts);
@@ -52,8 +52,8 @@ export default class PlaylistListEntry extends Component {
       <div className="PlaylistListEntry">
         <img src={this.state.image.url} alt={this.state.name} />
         <div className="playlistInfo">
-          <h1>{this.state.name}</h1>
-          <p>{this.cleanDisc(this.state.description)}</p>
+            <h1>{this.state.name}</h1>
+            <h2>{this.state.tracks.total} Tracks</h2>
         </div>
       </div>
     );

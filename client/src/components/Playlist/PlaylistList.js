@@ -14,7 +14,7 @@ export default class PlaylistList extends Component {
     axios.get(endpoint).then(res => {
       var playlists = this.state.playlists;
       res.data.items.forEach(item => {
-        playlists.push(<PlaylistListEntry data={item} key={item.uri}/>)
+        playlists.push(<PlaylistListEntry data={item} key={item.id}/>)
       });
       if (res.data.next != null) {
         this.getPlaytlists(res.data.next);

@@ -1,44 +1,131 @@
-@import '../vars';
+@import '../common';
 
 .PlaylistListEntry {
   display: inline-block;
-  width: 650px;
-  text-align: left;
-  padding: 25px;
-  margin: 25px;
+  padding: 20px;
+  margin: 20px;
   background-color: $dark;
   border-radius: 25px;
-  transition: all .1s ease-in-out;
+  overflow-y: hidden;
+  transition: all 0.25s ease-in-out;
+
+  img {
+    width: 200px;
+    height: 200px;
+  }
+
+  div.playlistInfo {
+    width: 280px;
+
+    height: 70px;
+    margin: 20px;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    h2 {
+      font-size: 14px;
+    }
+  }
+
+  p {
+    a {
+      color: $medlight;
+      text-decoration: none;
+
+      &:hover {
+        color: $meddark;
+        text-decoration: underline;
+      }
+    }
+  }
+
   &:hover {
     transform: scale(1.1);
   }
-  img {
-    height: 150px;
-    width: 150px;
-    display: inline-block;
-    padding-right: 30px;
-    vertical-align: middle;
-  }
-  .playlistInfo {
-    font-size: 12px;
-    width: 450px;
-    line-height: 50px;
-    display: inline-block;
-    vertical-align: middle;
-    h1 {
-      overflow: wrap;
-      line-height: 32px;
+
+  @include responsive(xs) {
+    width: 360px;
+    height: max-content;
+
+    img {
+      display: initial;
     }
-    p {
-      overflow: wrap;
-      line-height: 18px;
-      a {
-        color: $medlight;
-        text-decoration: none;
-        &:hover {
-          color: $meddark;
-          text-decoration: underline;
-        }
+
+    .playlistInfo {
+      display: initial;
+    }
+  }
+  @include responsive(sm) {
+    width: 500px;
+    height: 200px;
+    text-align: left;
+
+    img {
+      display: inline-block;
+    }
+
+    div.playlistInfo {
+      height: 160px;
+      padding-top: 0px;
+      position: absolute;
+      display: inline-block;
+
+      h1 {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        line-height: 80px;
+      }
+    }
+  }
+  @include responsive(md) {
+    width: 500px;
+    height: 200px;
+    text-align: left;
+
+    img {
+      display: inline-block;
+    }
+
+    div.playlistInfo {
+      height: 160px;
+      padding-top: 0px;
+      position: absolute;
+      display: inline-block;
+
+      h1 {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        line-height: 80px;
+      }
+    }
+  }
+  @include responsive(lg) {
+    width: 500px;
+    height: 200px;
+    text-align: left;
+
+    img {
+      display: inline-block;
+    }
+
+    div.playlistInfo {
+      height: 160px;
+      padding-top: 0px;
+      position: absolute;
+      display: inline-block;
+
+      h1 {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+        line-height: 80px;
       }
     }
   }
