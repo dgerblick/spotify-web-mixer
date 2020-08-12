@@ -5,7 +5,7 @@
   margin: auto;
   
   @include responsive(xs) {
-    width: 100%;
+    width: 360px;
   }
   @include responsive(sm) {
     width: 750px;

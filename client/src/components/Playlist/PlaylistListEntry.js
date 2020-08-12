@@ -43,17 +43,19 @@ export default class PlaylistListEntry extends Component {
         parts[i] = AllHtmlEntities.decode(parts[i]);
       }
     }
-    console.log(parts);
     return parts;
   }
 
   render() {
     return (
       <div className="PlaylistListEntry">
-        <img src={this.state.image.url} alt={this.state.name} />
-        <div className="playlistInfo">
+        <div className="playlistCard">
+          <img src={this.state.image.url} alt={this.state.name} />
+          <div className="playlistInfo">
             <h1>{this.state.name}</h1>
             <h2>{this.state.tracks.total} Tracks</h2>
+          </div>
+          <p>{this.cleanDisc(this.state.description)}</p>
         </div>
       </div>
     );

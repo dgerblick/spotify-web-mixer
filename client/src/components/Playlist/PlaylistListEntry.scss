@@ -4,57 +4,122 @@
   display: inline-block;
   padding: 20px;
   margin: 20px;
-  background-color: $dark;
-  border-radius: 25px;
-  overflow-y: hidden;
-  transition: all 0.25s ease-in-out;
+  position: relative;
+  animation: 1000ms fly-in ease-out forwards;
+  opacity: 0%;
 
-  img {
-    width: 200px;
-    height: 200px;
+  & * {
+    transition: all 0.25s ease-in-out;
   }
 
-  div.playlistInfo {
-    width: 280px;
+  div.playlistCard {
+    display: inline-block;
+    width: inherit;
+    height: inherit;
+    background-color: $meddark;
+    border-radius: 25px;
+    padding: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
 
-    height: 70px;
-    margin: 20px;
-
-    h1 {
-      font-size: 24px;
+    img {
+      width: 200px;
+      height: 200px;
     }
 
-    h2 {
-      font-size: 14px;
+    div.playlistInfo {
+      width: 280px;
+      height: 70px;
+      margin: 20px;
+
+      h1 {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 14px;
+      }
     }
-  }
 
-  p {
-    a {
-      color: $medlight;
-      text-decoration: none;
+    p {    
+      display: none;
 
-      &:hover {
-        color: $meddark;
-        text-decoration: underline;
+      a {
+        color: $medlight;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    @keyframes fly-in {
+      0% {
+        opacity: 0%;
+        top: 100vh;
+      }
+      50% {
+        opacity: 0%;
+      }
+      80% {
+        top: -5vh;
+      }
+      100% {
+        opacity: 100%;
+        top: 0;
       }
     }
   }
 
+  @for $i from 0 through 9 {
+    &:nth-child(10n+#{($i + 1)}) {
+      animation-delay: 50ms * $i;
+    }
+  }
+
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.2);
+    z-index: 999;
+    
+    div.playlistCard {
+      background-color: $dark;
+      height: max-content;
+
+      p {
+        display: block;
+      }
+    }
   }
 
   @include responsive(xs) {
-    width: 360px;
+    width: 320px;
     height: max-content;
+    padding: 0;
+    
+    div.playlistCard {
+      width: 260px;
+      position: relative;
+      margin: 0;
+      padding: 20px;
 
-    img {
-      display: initial;
-    }
+      img {
+        width: 260px;
+        height: 260px;
+        display: block;
+      }
 
-    .playlistInfo {
-      display: initial;
+      div.playlistInfo {
+        width: 220px;
+        padding: 0px;
+        display: block;
+        height: max-content;
+      }
+
+      p {
+        display: block;
+      }
     }
   }
   @include responsive(sm) {
@@ -62,22 +127,16 @@
     height: 200px;
     text-align: left;
 
-    img {
-      display: inline-block;
-    }
+    div.playlistCard {
+      img {
+        display: inline-block;
+      }
 
-    div.playlistInfo {
-      height: 160px;
-      padding-top: 0px;
-      position: absolute;
-      display: inline-block;
-
-      h1 {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        vertical-align: middle;
-        line-height: 80px;
+      div.playlistInfo {
+        height: 160px;
+        padding-top: 0px;
+        position: absolute;
+        display: inline-block;
       }
     }
   }
@@ -86,22 +145,16 @@
     height: 200px;
     text-align: left;
 
-    img {
-      display: inline-block;
-    }
+    div.playlistCard {
+      img {
+        display: inline-block;
+      }
 
-    div.playlistInfo {
-      height: 160px;
-      padding-top: 0px;
-      position: absolute;
-      display: inline-block;
-
-      h1 {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        vertical-align: middle;
-        line-height: 80px;
+      div.playlistInfo {
+        height: 160px;
+        padding-top: 0px;
+        position: absolute;
+        display: inline-block;
       }
     }
   }
@@ -110,22 +163,16 @@
     height: 200px;
     text-align: left;
 
-    img {
-      display: inline-block;
-    }
+    div.playlistCard {
+      img {
+        display: inline-block;
+      }
 
-    div.playlistInfo {
-      height: 160px;
-      padding-top: 0px;
-      position: absolute;
-      display: inline-block;
-
-      h1 {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        vertical-align: middle;
-        line-height: 80px;
+      div.playlistInfo {
+        height: 160px;
+        padding-top: 0px;
+        position: absolute;
+        display: inline-block;
       }
     }
   }

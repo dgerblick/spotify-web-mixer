@@ -4,7 +4,9 @@ html,
 body {
   width: 100%;
   height: 100%;
-  background-color: $meddark;
+  background-image: radial-gradient($green, $blue);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: $light;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

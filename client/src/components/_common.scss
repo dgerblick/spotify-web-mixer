@@ -1,8 +1,12 @@
 // Colors
-$dark: #0a0a0a;
-$meddark: #464646;
-$medlight: #7a7a7a;
-$light: #f8f8f8;
+$dark: #0A0A0A;
+$meddark: #35393C;
+$medlight: #7A7A7A;
+$light: #F8F8F8;
+$green: #1DB954;
+$blue: #42858C;
+$red: #DB504A;
+$yellow: #E3B505;
 
 // Responsive
 @mixin responsive($class) {
