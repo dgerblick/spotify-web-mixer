@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import { AllHtmlEntities } from 'html-entities';
+import { Link } from 'react-router-dom';
 import './PlaylistListEntry.scss';
 
 export default class PlaylistListEntry extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      image: {},
+      description: [],
+    };
+  }
+
+  componentDidMount() {
     let image = {
       width: null,
       height: null,
@@ -13,7 +21,7 @@ export default class PlaylistListEntry extends Component {
       url: 'logo512.png',
     };
 
-    props.data.images.forEach(element => {
+    this.props.data.images.forEach(element => {
       let size = Math.sqrt(element.width ** 2 * element.height ** 2);
       if (size >= image.size) {
         image = element;
@@ -21,43 +29,44 @@ export default class PlaylistListEntry extends Component {
       }
     });
 
-    this.state = {
-      image,
-      description: props.data.description,
-      name: props.data.name,
-      tracks: props.data.tracks,
-    };
-  }
-
-  cleanDisc(text) {
-    let parts = text.split(/(<a[^>]*>[^<]*<\/a>)/);
-    for (let i = 0; i < parts.length; i++) {
-      if (/<a[^>]*>[^<]*<\/a>/.test(parts[i])) {
-        let subparts = parts[i].split(/<a[^>]*href="|"[^>]*>|<\/a>/);
-        parts[i] = (
+    let description = this.props.data.description.split(/(<a[^>]*>[^<]*<\/a>)/);
+    for (let i = 0; i < description.length; i++) {
+      if (/<a[^>]*>[^<]*<\/a>/.test(description[i])) {
+        let subparts = description[i].split(/<a[^>]*href="|"[^>]*>|<\/a>/);
+        description[i] = (
           <a key={'desc-link-' + i} href={subparts[1]}>
             {AllHtmlEntities.decode(subparts.slice(2).join(''))}
           </a>
         );
       } else {
-        parts[i] = AllHtmlEntities.decode(parts[i]);
+        description[i] = AllHtmlEntities.decode(description[i]);
       }
     }
-    return parts;
+
+    this.setState({ image, description });
   }
 
   render() {
     return (
-      <div className="PlaylistListEntry">
+      <Link
+        className="PlaylistListEntry"
+        to={{
+          pathname: `/playlist/${this.props.data.id}`,
+          state: {
+            data: this.props.data,
+            image: this.state.image,
+          }
+        }}
+      >
         <div className="playlistCard">
-          <img src={this.state.image.url} alt={this.state.name} />
+          <img src={this.state.image.url} alt={this.props.data.name} />
           <div className="playlistInfo">
-            <h1>{this.state.name}</h1>
-            <h2>{this.state.tracks.total} Tracks</h2>
+            <h1>{this.props.data.name}</h1>
+            <h2>{this.props.data.tracks.total} Tracks</h2>
           </div>
-          <p>{this.cleanDisc(this.state.description)}</p>
+          <p>{this.state.description}</p>
         </div>
-      </div>
+      </Link>
     );
   }
 }

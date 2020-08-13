@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.scss';
-import NowPlaying from '../Song/NowPlaying';
 import PlaylistList from '../Playlist/PlaylistList';
+import PlaylistDisplay from '../Playlist/PlaylistDisplay';
 
 const cookies = new Cookies();
 
@@ -16,30 +17,29 @@ export default class App extends Component {
     if (auth_token === undefined) {
       window.location = 'http://localhost:3001/api/auth';
     }
-
-    axios.interceptors.request.use(
-      function (config) {
-        if (Date.now() > auth_token.expires) {
-          Promise.resolve(fetch('/api/refresh'));
-          auth_token = cookies.get('auth_token');
-        }
-        config.headers['Authorization'] = `Bearer ${auth_token.access_token}`;
-        return config;
-      },
-      function (error) {
-        console.log(error);
-        return Promise.reject(error);
-      }
-    );
-
     this.state = { auth_token };
+
+    axios.interceptors.request.use((config) => {
+      if (Date.now() > this.state.auth_token.expires) {
+        cookies.remove('auth_token');
+        Promise.resolve(fetch('/api/refresh'));
+        this.setState({ auth_token: cookies.get('auth_token') });
+      }
+      config.headers[
+        'Authorization'
+      ] = `Bearer ${this.state.auth_token.access_token}`;
+      return config;
+    });
   }
 
   render() {
     return (
-      <div className="App">
-        <PlaylistList />
-      </div>
+      <Router className="App">
+        <Switch>
+          <Route path="/playlist" component={PlaylistDisplay} />
+          <Route path="/" component={PlaylistList} />
+        </Switch>
+      </Router>
     );
   }
 }

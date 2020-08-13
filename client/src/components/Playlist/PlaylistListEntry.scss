@@ -7,9 +7,10 @@
   position: relative;
   animation: 1000ms fly-in ease-out forwards;
   opacity: 0%;
+  color: inherit;
 
   & * {
-    transition: all 0.25s ease-in-out;
+    transition: all 100ms ease-in-out;
   }
 
   div.playlistCard {
@@ -22,6 +23,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    box-shadow: 5px 5px 10px $dark;
 
     img {
       width: 200px;

@@ -3,8 +3,8 @@
 html,
 body {
   width: 100%;
-  height: 100%;
-  background-image: radial-gradient($green, $blue);
+  height: max-content;
+  background-image: radial-gradient(circle at center, $green, $blue);
   background-repeat: no-repeat;
   background-attachment: fixed;
   color: $light;
@@ -18,5 +18,5 @@ body {
 
 #root {
   width: 100%;
-  height: 100%;
+  height: max-content;
 }
