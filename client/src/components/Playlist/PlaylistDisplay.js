@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Measure from 'react-measure';
+import AwesomeDebouncePromise from 'awesome-debounce-promise';
 import './PlaylistDisplay.scss';
 
 export default class PlaylistDisplay extends Component {
@@ -12,18 +13,46 @@ export default class PlaylistDisplay extends Component {
     };
   }
 
+  resize = AwesomeDebouncePromise(() => {
+    let radius = this.state.contentRect.bounds.width / 2;
+    let ballRadius =
+      (this.state.contentRect.bounds.width * Math.PI) /
+      (this.props.location.state.data.tracks.total * 2);
+
+    ballRadius =
+      ballRadius > this.props.minBallSize ? ballRadius : this.props.minBallSize;
+
+    this.setState({ radius, ballRadius });
+  }, this.props.resizeDebounce);
+
+  componentDidMount() {}
+
   render() {
     let tracks = [];
     let total = this.props.location.state.data.tracks.total;
     for (let i = 0; i < total; i++) {
+      let radius =
+        this.state.ballRadius > this.props.minBallSize
+          ? this.state.radius
+          : this.state.radius *
+            Math.sqrt(
+              ((0.25) *
+                ((i - (i * (total % this.props.turnAngle)) / total) %
+                  this.props.turnAngle)) /
+                this.props.turnAngle +
+                (1 - 0.25)
+            );
+      let x = radius * Math.cos(2 * Math.PI * (i / total));
+      let y = radius * Math.sin(2 * Math.PI * (i / total));
       tracks.push(
         <div
+          key={i}
           className="ball"
           style={{
             width: this.state.ballRadius,
             height: this.state.ballRadius,
-            top: this.state.radius * Math.sin(2 * Math.PI * (i / total)) + this.state.radius,
-            right: this.state.radius * Math.cos(2 * Math.PI * (i / total)) + this.state.radius,
+            top: y + this.state.radius,
+            right: x + this.state.radius,
           }}
         />
       );
@@ -32,11 +61,9 @@ export default class PlaylistDisplay extends Component {
     return (
       <Measure
         bounds
-        onResize={contentRect => {
-          this.setState({
-            radius: contentRect.bounds.width / 2,
-            ballRadius: (contentRect.bounds.width * Math.PI) / (total * 2),
-          });
+        onResize={async contentRect => {
+          this.setState({ contentRect });
+          const result = await this.resize();
         }}
       >
         {({ measureRef }) => (
@@ -57,3 +84,9 @@ export default class PlaylistDisplay extends Component {
     );
   }
 }
+
+PlaylistDisplay.defaultProps = {
+  turnAngle: (1 + Math.sqrt(5)) / 2,
+  minBallSize: 10,
+  resizeDebounce: 100,
+};
