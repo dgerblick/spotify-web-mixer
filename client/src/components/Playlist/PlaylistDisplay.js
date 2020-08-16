@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import Measure from 'react-measure';
 import AwesomeDebouncePromise from 'awesome-debounce-promise';
+import axios from 'axios';
+import Measure from 'react-measure';
 import './PlaylistDisplay.scss';
+import SongBall from '../Song/SongBall';
 
 export default class PlaylistDisplay extends Component {
   constructor(props) {
@@ -10,6 +12,7 @@ export default class PlaylistDisplay extends Component {
     this.state = {
       radius: 0,
       ballRadius: 0,
+      tracks: [],
     };
   }
 
@@ -25,45 +28,30 @@ export default class PlaylistDisplay extends Component {
     this.setState({ radius, ballRadius });
   }, this.props.resizeDebounce);
 
-  componentDidMount() {}
+  getTrackPage(location) {
+    if (location != null) {
+      axios.get(location).then(res => {
+        let tracks = this.state.tracks;
+        tracks = [...tracks, ...res.data.items];
+        this.setState({ tracks });
+        this.getTrackPage(res.data.next);
+      });
+    }
+  }
+
+  componentDidMount() {
+    if (this.state.tracks.length === 0) {
+      this.getTrackPage(this.props.location.state.data.tracks.href);
+    }
+  }
 
   render() {
-    let tracks = [];
-    let total = this.props.location.state.data.tracks.total;
-    for (let i = 0; i < total; i++) {
-      let radius =
-        this.state.ballRadius > this.props.minBallSize
-          ? this.state.radius
-          : this.state.radius *
-            Math.sqrt(
-              ((0.25) *
-                ((i - (i * (total % this.props.turnAngle)) / total) %
-                  this.props.turnAngle)) /
-                this.props.turnAngle +
-                (1 - 0.25)
-            );
-      let x = radius * Math.cos(2 * Math.PI * (i / total));
-      let y = radius * Math.sin(2 * Math.PI * (i / total));
-      tracks.push(
-        <div
-          key={i}
-          className="ball"
-          style={{
-            width: this.state.ballRadius,
-            height: this.state.ballRadius,
-            top: y + this.state.radius,
-            right: x + this.state.radius,
-          }}
-        />
-      );
-    }
-
     return (
       <Measure
         bounds
         onResize={async contentRect => {
           this.setState({ contentRect });
-          const result = await this.resize();
+          await this.resize();
         }}
       >
         {({ measureRef }) => (
@@ -77,7 +65,20 @@ export default class PlaylistDisplay extends Component {
                 height: this.state.radius / 2,
               }}
             />
-            <div className="content">{tracks}</div>
+            <div className="content">
+              {this.state.tracks.map((value, index) => {
+                return (
+                  <SongBall
+                    key={index}
+                    index={index}
+                    total={this.props.location.state.data.tracks.total}
+                    parentRadius={this.state.radius}
+                    radius={this.state.ballRadius}
+                    minRadius={10}
+                  />
+                );
+              })}
+            </div>
           </div>
         )}
       </Measure>

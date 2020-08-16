@@ -1,0 +1,32 @@
+@import '../common';
+
+.SongBall {
+  position: absolute;
+  border-radius: 50%;
+  background-color: $dark;
+  transform: translate(50%, -50%);
+  z-index: 999;
+  animation: circle-in 1s ease-out forwards;
+  opacity: 0%;
+
+  @for $i from 0 through 99 {
+    &:nth-child(100n+#{$i}) {
+      animation-delay: random(500) + ms;
+    }
+  }
+
+  @keyframes circle-in {
+    0% {
+      top: 50%;
+      right: 50%;
+    }
+    20% {
+      opacity: 0%;
+      transform: scale(0);
+    }
+    100% {
+      opacity: 100%;
+      transform: scale(1);
+    }
+  }
+}
