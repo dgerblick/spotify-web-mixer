@@ -9,10 +9,13 @@ export default class PlaylistDisplay extends Component {
   constructor(props) {
     super(props);
 
+    this.timingRef = React.createRef();
+
     this.state = {
       radius: 0,
       ballRadius: 0,
       tracks: [],
+      ready: false,
     };
   }
 
@@ -20,10 +23,7 @@ export default class PlaylistDisplay extends Component {
     let radius = this.state.contentRect.bounds.width / 2;
     let ballRadius =
       (this.state.contentRect.bounds.width * Math.PI) /
-      (this.props.location.state.data.tracks.total * 2);
-
-    ballRadius =
-      ballRadius > this.props.minBallSize ? ballRadius : this.props.minBallSize;
+      (this.props.location.state.data.tracks.total * 4);
 
     this.setState({ radius, ballRadius });
   }, this.props.resizeDebounce);
@@ -31,10 +31,33 @@ export default class PlaylistDisplay extends Component {
   getTrackPage(location) {
     if (location != null) {
       axios.get(location).then(res => {
-        let tracks = this.state.tracks;
-        tracks = [...tracks, ...res.data.items];
-        this.setState({ tracks });
-        this.getTrackPage(res.data.next);
+        let tracks = res.data.items;
+        let next = res.data.next;
+        axios
+          .get(
+            'https://api.spotify.com/v1/audio-features?ids=' +
+              tracks.map(e => e.track.id).join(',')
+          )
+          .then(res => {
+            tracks.forEach((e, i) => {
+              e.audio_features = res.data.audio_features[i];
+              e.camelot =
+                res.data.audio_features[i].mode +
+                2 *
+                  ((((8 - 5 * res.data.audio_features[i].key) % 12) + 12) % 12);
+            });
+            this.setState({
+              tracks: [...this.state.tracks, ...tracks],
+            });
+            this.getTrackPage(next);
+          });
+      });
+    } else {
+      let tracks = this.state.tracks;
+      tracks.sort((a, b) => a.camelot - b.camelot);
+      this.setState({
+        tracks,
+        ready: true,
       });
     }
   }
@@ -65,20 +88,20 @@ export default class PlaylistDisplay extends Component {
                 height: this.state.radius / 2,
               }}
             />
-            <div className="content">
-              {this.state.tracks.map((value, index) => {
-                return (
+            <svg className="canvas">
+              {this.state.ready &&
+                this.state.tracks.map((value, index) => (
                   <SongBall
                     key={index}
                     index={index}
                     total={this.props.location.state.data.tracks.total}
                     parentRadius={this.state.radius}
                     radius={this.state.ballRadius}
-                    minRadius={10}
+                    minRadius={5}
+                    ref={this.timingRef}
                   />
-                );
-              })}
-            </div>
+                ))}
+            </svg>
           </div>
         )}
       </Measure>
@@ -87,7 +110,5 @@ export default class PlaylistDisplay extends Component {
 }
 
 PlaylistDisplay.defaultProps = {
-  turnAngle: (1 + Math.sqrt(5)) / 2,
-  minBallSize: 10,
   resizeDebounce: 100,
 };

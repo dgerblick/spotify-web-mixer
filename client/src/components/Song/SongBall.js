@@ -13,17 +13,19 @@ export default class SongBall extends Component {
       props.parentRadius !== state.parentRadius ||
       props.radius !== state.radius
     ) {
-      let fibbFill =
-        (props.targetDensity * props.total) /
-        (Math.PI * props.parentRadius ** 2);
-      fibbFill = fibbFill > 0.9 ? 0.9 : fibbFill
-      
+      let radius = Math.max(props.radius, props.minRadius);
+      let fibbFill = Math.min(
+        (props.targetDensity * props.total * (radius ** 2)) /
+          (props.parentRadius ** 2),
+        0.9
+      );
+
       let theta = 2 * Math.PI * (props.index / props.total);
 
       let r =
-        props.radius > props.minRadius
-          ? props.parentRadius
-          : props.parentRadius *
+        radius > props.minRadius
+          ? props.parentRadius - radius * 2
+          : (props.parentRadius - radius * 2) *
             Math.sqrt(
               (fibbFill *
                 ((props.index -
@@ -38,27 +40,68 @@ export default class SongBall extends Component {
         pos: {
           theta,
           r,
-          x: r * Math.cos(theta),
-          y: -r * Math.sin(theta),
+          x: r * Math.sin(theta),
+          y: -r * Math.cos(theta),
         },
         parentRadius: props.parentRadius,
+        radius,
       };
     } else {
       return null;
     }
   }
 
+  componentDidMount() {
+    this.svgAnimate.beginElementAt(this.props.index / this.props.total);
+  }
+
+  //render() {
+  //  return (
+  //    <div
+  //      className="SongBall"
+  //      style={{
+  //        width: this.state.radius,
+  //        height: this.state.radius,
+  //        top: this.state.pos.y + this.state.parentRadius,
+  //        right: this.state.pos.x + this.state.parentRadius,
+  //        animationDelay: `${
+  //          (this.props.index * 1000) / this.props.total +
+  //          (Math.random() * 100 - 50)
+  //        }ms`,
+  //      }}
+  //    />
+  //  );
+  //}
   render() {
     return (
-      <div
+      <g
         className="SongBall"
-        style={{
-          width: this.props.radius,
-          height: this.props.radius,
-          top: this.state.pos.y + this.state.parentRadius,
-          right: this.state.pos.x + this.state.parentRadius,
-        }}
-      />
+        transform={`translate(${this.state.parentRadius + this.state.pos.x}, ${
+          this.state.parentRadius + this.state.pos.y
+        })`}
+      >
+        {' '}
+        <circle>
+          <animate
+            ref={svgAnimate => {
+              this.svgAnimate = svgAnimate;
+            }}
+            attributeName="r"
+            dur="200ms"
+            begin="indefinite"
+            fill="freeze"
+            from={0}
+            to={this.state.radius}
+          />
+        </circle>
+        <animateMotion
+          dur={`${this.props.animationLength}s`}
+          repeatCount="indefinite"
+          path={`M 0 0 A 50 50 0 1 1 ${-2 * this.state.pos.x} ${
+            -2 * this.state.pos.y
+          } A 50 50 0 1 1 0 0 Z`}
+        />
+      </g>
     );
   }
 }
@@ -71,5 +114,6 @@ SongBall.defaultProps = {
   radius: 20,
   minRadius: 10,
   parentRadius: 100,
-  targetDensity: 500,
+  targetDensity: 5,
+  animationLength: 240,
 };
