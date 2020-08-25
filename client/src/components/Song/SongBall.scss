@@ -4,9 +4,22 @@
   transform-origin: 50% 50%;
   circle {
     transition: all 0.2s;
+  }
 
-    &:hover {
+  foreignObject {
+    display: none;
+    div {
+      background-color: black;
+    }
+  }
+
+  &:hover {
+    circle {
       transform: scale(2);
+    }
+
+    foreignObject {
+      display: block;
     }
   }
 }

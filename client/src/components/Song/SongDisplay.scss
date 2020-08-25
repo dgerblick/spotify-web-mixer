@@ -2,39 +2,31 @@
 
 .SongDisplay {
   display: inline-block;
-  width: 450px;
+  width: 300px;
   text-align: left;
   margin: 25px;
+  z-index: 999;
+
   img {
-    height: 150px;
-    width: 150px;
+    height: 250px;
+    width: 250px;
     display: inline-block;
     padding-right: 30px;
     vertical-align: middle;
   }
   .songInfo {
-    font-size: 12px;
     width: 250px;
-    line-height: 50px;
+    line-height: 24px;
     white-space: nowrap;
     display: inline-block;
-    vertical-align: middle;
     overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
     h1 {
-      width: max-content;
-      animation: 6s marquee infinite linear;
-      @keyframes marquee {
-        0% {
-          transform: translateX(250px);
-        }
-        30%,
-        50% {
-          transform: translateX(0);
-        }
-        100% {
-          transform: translateX(-110%);
-        }
-      }
+      font-size: 24px;
+    }
+    h2 {
+      font-size: 18px;
     }
   }
 }

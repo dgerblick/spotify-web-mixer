@@ -5,6 +5,8 @@ import Measure from 'react-measure';
 import './PlaylistDisplay.scss';
 import SongBall from '../Song/SongBall';
 
+const mod = (n, m) => ((n % m) + m) % m;
+
 export default class PlaylistDisplay extends Component {
   constructor(props) {
     super(props);
@@ -41,10 +43,12 @@ export default class PlaylistDisplay extends Component {
           .then(res => {
             tracks.forEach((e, i) => {
               e.audio_features = res.data.audio_features[i];
-              e.camelot =
-                res.data.audio_features[i].mode +
-                2 *
-                  ((((8 - 5 * res.data.audio_features[i].key) % 12) + 12) % 12);
+              e.camelot = mod(
+                16 -
+                  10 * res.data.audio_features[i].key +
+                  7 * res.data.audio_features[i].mode,
+                24
+              );
             });
             this.setState({
               tracks: [...this.state.tracks, ...tracks],
@@ -55,6 +59,34 @@ export default class PlaylistDisplay extends Component {
     } else {
       let tracks = this.state.tracks;
       tracks.sort((a, b) => a.camelot - b.camelot);
+      tracks.forEach((value, index) => {
+        let total = this.props.location.state.data.tracks.total;
+        let radius = Math.max(this.state.ballRadius, this.props.minBallRadius);
+        let fibbFill = Math.min(
+          (this.props.targetBallDensity * total * radius ** 2) /
+            this.state.radius ** 2,
+          0.9
+        );
+
+        let theta = 2 * Math.PI * (index / total);
+
+        let r =
+          radius > this.props.minBallRadius
+            ? this.state.radius - radius * 2
+            : (this.state.radius - radius * 2) *
+              Math.sqrt(
+                (fibbFill *
+                  ((index - (index * (total % this.props.turnAngle)) / total) %
+                    this.props.turnAngle)) /
+                  this.props.turnAngle +
+                  (1 - fibbFill)
+              );
+        value.pos = {
+          x: r * Math.sin(theta),
+          y: -r * Math.cos(theta),
+        };
+        value.radius = radius;
+      });
       this.setState({
         tracks,
         ready: true,
@@ -91,15 +123,40 @@ export default class PlaylistDisplay extends Component {
             <svg className="canvas">
               {this.state.ready &&
                 this.state.tracks.map((value, index) => (
-                  <SongBall
-                    key={index}
-                    index={index}
-                    total={this.props.location.state.data.tracks.total}
-                    parentRadius={this.state.radius}
-                    radius={this.state.ballRadius}
-                    minRadius={5}
-                    ref={this.timingRef}
-                  />
+                  <g key={`group${index}`}>
+                    <SongBall
+                      pos={value.pos}
+                      key={`ball${index}`}
+                      parentRadius={this.state.radius}
+                      radius={value.radius}
+                      ref={this.timingRef}
+                      track={value.track}
+                    />
+                    {this.state.tracks
+                      .slice(index)
+                      .map((subValue, subIndex) => {
+                        if (
+                          value.camelot === subValue.camelot ||
+                          mod(value.camelot + 1, 24) === subValue.camelot ||
+                          mod(value.camelot - 1, 24) === subValue.camelot ||
+                          Math.floor(value.camelot / 2) ===
+                            Math.floor(subValue.camelot / 2)
+                        )
+                          return (
+                            <line
+                              key={`line${index}-${subIndex}`}
+                              x1={value.pos.x + this.state.radius}
+                              y1={value.pos.y + this.state.radius}
+                              x2={subValue.pos.x + this.state.radius}
+                              y2={subValue.pos.y + this.state.radius}
+                              style={{
+                                stroke: 'black',
+                                strokeWidth: 0.1,
+                              }}
+                            />
+                          );
+                      })}
+                  </g>
                 ))}
             </svg>
           </div>
@@ -111,4 +168,7 @@ export default class PlaylistDisplay extends Component {
 
 PlaylistDisplay.defaultProps = {
   resizeDebounce: 100,
+  minBallRadius: 5,
+  targetBallDensity: 5,
+  turnAngle: (1 + Math.sqrt(5)) / 2,
 };

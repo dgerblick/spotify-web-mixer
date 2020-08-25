@@ -1,45 +1,30 @@
 import React, { Component } from 'react';
-import './SongDisplay.scss'
+import './SongDisplay.scss';
 
 export default class SongDisplay extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      img: {},
-      title: '',
-      artists: [],
-      albumName: '',
-    };
+    this.state = { track: { id: '' } };
   }
 
-  componentDidUpdate(prevProps) {
-    if (
-      typeof this.props.track !== 'undefined' &&
-      this.props.track.id !== prevProps.track.id
-    ) {
-      this.setState({
-        img: this.props.track.album.images[0],
-        title: this.props.track.name,
-        artists: this.props.track.artists,
-        albumName: this.props.track.album.name,
-      });
-    }
+  static getDerivedStateFromProps(props, state) {
+    if (props.track.id !== state.track.id) return { track: props.track };
   }
 
   render() {
     return (
       <div className="SongDisplay">
-        <img src={this.state.img.url} alt={this.state.albumName} />
+        <img src={this.state.track.album.images[0].url} alt={this.state.track.album.name} />
         <div className="songInfo">
-          <h1>{this.state.title}</h1>
-          <h1>
+          <h1>{this.state.track.name}</h1>
+          <h2>
             {(artists => {
-              var out = [];
+              let out = [];
               artists.forEach(e => out.push(e.name));
               return out.join(', ');
-            })(this.state.artists)}
-          </h1>
+            })(this.state.track.artists)}
+          </h2>
         </div>
       </div>
     );
