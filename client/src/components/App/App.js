@@ -14,7 +14,7 @@ export default class App extends Component {
 
     var auth_token = cookies.get('auth_token');
 
-    if (auth_token === undefined) {
+    if (auth_token === undefined || Date.now() > auth_token.expires) {
       window.location = 'http://localhost:3001/api/auth';
     }
     this.state = { auth_token };

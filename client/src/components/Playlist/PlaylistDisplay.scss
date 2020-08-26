@@ -45,5 +45,11 @@
     position: absolute;
     top: 0;
     left: 0;
+    #loadingProgress {
+      transition: stroke-dashoffset 0.2s;
+      fill: transparent;
+      stroke: $dark;
+      stroke-width: 2px;
+    }
   }
 }

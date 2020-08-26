@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './SongBall.scss';
-import SongDisplay from './SongDisplay';
+import Color from 'color-thief-react';
 
 export default class SongBall extends Component {
   constructor(props) {
@@ -39,24 +39,28 @@ export default class SongBall extends Component {
         })`}
       >
         {' '}
-        <circle>
-          <animate
-            ref={svgAnimate => {
-              this.svgAnimate = svgAnimate;
-            }}
-            attributeName="r"
-            dur="200ms"
-            begin="indefinite"
-            fill="freeze"
-            from={0}
-            to={this.state.radius}
-          />
-        </circle>
-        <foreignObject x="-150" y={this.state.radius * 2} width="300" height="600">
-          <div xmlns="http://www.w3.org/1999/xhtml">
-            <SongDisplay track={this.state.track}/>
-          </div>
-        </foreignObject>
+        <Color
+          src={this.props.track.album.images[0].url}
+          crossOrigin="anonymous"
+          format="hex"
+          quality={this.props.track.album.images[0].width / this.props.samples}
+        >
+          {({ data, loading, error }) => (
+            <circle fill={loading ? 'white' : data}>
+              <animate
+                ref={svgAnimate => {
+                  this.svgAnimate = svgAnimate;
+                }}
+                attributeName="r"
+                dur="200ms"
+                begin="indefinite"
+                fill="freeze"
+                from={0}
+                to={this.state.radius}
+              />
+            </circle>
+          )}
+        </Color>
       </g>
     );
   }
@@ -72,4 +76,5 @@ SongBall.defaultProps = {
   parentRadius: 100,
   targetDensity: 5,
   animationLength: 600,
+  samples: 10,
 };
