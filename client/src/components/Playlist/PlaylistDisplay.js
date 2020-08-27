@@ -12,7 +12,7 @@ export default class PlaylistDisplay extends Component {
   constructor(props) {
     super(props);
 
-    this.timingRef = React.createRef();
+    this.updateCenter = this.updateCenter.bind(this);
 
     this.state = {
       total: this.props.location.state.data.tracks.total,
@@ -35,8 +35,7 @@ export default class PlaylistDisplay extends Component {
     let tracks = this.state.tracks;
     async.eachOf(tracks, (value, index) => {
       let fibbFill = Math.min(
-        (this.props.targetBallDensity * this.state.total * ballRadius ** 2) /
-          ballRadius ** 2,
+        this.props.targetBallDensity * this.state.total,
         0.9
       );
 
@@ -61,6 +60,7 @@ export default class PlaylistDisplay extends Component {
       };
       value.radius = ballRadius;
     });
+    this.updateCenter(this.state.center);
     this.setState({
       radius,
       ballRadius,
@@ -113,6 +113,10 @@ export default class PlaylistDisplay extends Component {
     }
   }
 
+  updateCenter(image) {
+    this.setState({ center: image });
+  }
+
   componentDidMount() {
     if (this.state.tracks.length === 0) {
       this.getTrackPage(this.props.location.state.data.tracks.href);
@@ -127,15 +131,6 @@ export default class PlaylistDisplay extends Component {
       >
         {({ measureRef }) => (
           <div ref={measureRef} className="PlaylistDisplay">
-            <img
-              src={this.props.location.state.image.url}
-              alt={this.props.location.state.data.name}
-              className="playlistCover"
-              style={{
-                width: this.state.radius / 2,
-                height: this.state.radius / 2,
-              }}
-            />
             <svg className="canvas">
               {this.state.ready !== 1 && (
                 <circle
@@ -149,46 +144,55 @@ export default class PlaylistDisplay extends Component {
                   }
                 />
               )}
-              {this.state.ready === 1 &&
-                this.state.tracks.map((value, index) => (
-                  <g key={`group${index}`}>
-                    <SongBall
-                      pos={value.pos}
-                      key={`ball${index}`}
-                      parentRadius={this.state.radius}
-                      radius={value.radius}
-                      ref={this.timingRef}
-                      track={value.track}
-                    />
-                    {this.state.tracks
-                      .slice(index)
-                      .map((subValue, subIndex) => {
-                        if (
-                          value.camelot === subValue.camelot ||
-                          mod(value.camelot + 2, 24) === subValue.camelot ||
-                          mod(value.camelot - 2, 24) === subValue.camelot ||
-                          Math.floor(value.camelot / 2) ===
-                            Math.floor(subValue.camelot / 2)
-                        )
-                          return (
-                            <line
-                              key={`line${index}-${subIndex}`}
-                              x1={value.pos.x + this.state.radius}
-                              y1={value.pos.y + this.state.radius}
-                              x2={subValue.pos.x + this.state.radius}
-                              y2={subValue.pos.y + this.state.radius}
-                              style={{
-                                stroke: 'black',
-                                strokeWidth:
-                                  this.props.lineWidth * value.radius,
-                              }}
-                            />
-                          );
-                        else return null;
-                      })}
-                  </g>
-                ))}
+              {this.state.tracks.map((value, index) => (
+                <g key={`group${index}`}>
+                  <SongBall
+                    pos={value.pos}
+                    key={`ball${index}`}
+                    parentRadius={this.state.radius}
+                    radius={value.radius}
+                    center={this.updateCenter}
+                    track={value.track}
+                    className={this.state.ready === 1 ? 'ready' : 'notReady'}
+                  />
+                  {false &&
+                    this.state.tracks.slice(index).map((subValue, subIndex) => {
+                      if (
+                        value.camelot === subValue.camelot ||
+                        mod(value.camelot + 2, 24) === subValue.camelot ||
+                        mod(value.camelot - 2, 24) === subValue.camelot ||
+                        Math.floor(value.camelot / 2) ===
+                          Math.floor(subValue.camelot / 2)
+                      )
+                        return (
+                          <line
+                            key={`line${index}-${subIndex}`}
+                            x1={value.pos.x + this.state.radius}
+                            y1={value.pos.y + this.state.radius}
+                            x2={subValue.pos.x + this.state.radius}
+                            y2={subValue.pos.y + this.state.radius}
+                            style={{
+                              stroke: 'black',
+                              strokeWidth: this.props.lineWidth * value.radius,
+                            }}
+                          />
+                        );
+                      else return null;
+                    })}
+                </g>
+              ))}
             </svg>
+            {this.state.center || (
+              <img
+                src={this.props.location.state.image.url}
+                alt={this.props.location.state.data.name}
+                className="playlistCover"
+                style={{
+                  width: this.state.radius / 2,
+                  height: this.state.radius / 2,
+                }}
+              />
+            )}
           </div>
         )}
       </Measure>
@@ -198,8 +202,9 @@ export default class PlaylistDisplay extends Component {
 
 PlaylistDisplay.defaultProps = {
   resizeDebounce: 100,
-  minBallRadius: 5,
-  targetBallDensity: 5,
+  minBallRadius: 10,
+  targetBallDensity: 1/1000,
   turnAngle: (1 + Math.sqrt(5)) / 2,
   lineWidth: 0.05,
+  samples: 64,
 };

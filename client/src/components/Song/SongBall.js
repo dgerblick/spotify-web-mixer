@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
+import ColorThief from 'colorthief';
 import './SongBall.scss';
-import Color from 'color-thief-react';
+
+const colorThief = new ColorThief();
 
 export default class SongBall extends Component {
   constructor(props) {
     super(props);
+
+    this.localImageRef = React.createRef();
 
     this.state = {};
   }
@@ -19,6 +23,21 @@ export default class SongBall extends Component {
         parentRadius: props.parentRadius,
         radius: props.radius,
         track: props.track,
+        image: {
+          ...props.track.album.images[0],
+          jsx: (
+            <img
+              src={props.track.album.images[0].url}
+              alt={props.track.name}
+              className="albumCover"
+              onLoad={() => console.log('load')}
+              style={{
+                width: Math.SQRT2 * props.parentRadius / 4,
+                height: Math.SQRT2 * props.parentRadius / 4,
+              }}
+            />
+          ),
+        },
       };
     } else {
       return null;
@@ -31,50 +50,48 @@ export default class SongBall extends Component {
 
   render() {
     return (
+      //<Color
+      //  src={this.state.image.url}
+      //  crossOrigin="anonymous"
+      //  format="hex"
+      //  quality={
+      //    (this.state.image.width * this.state.image.height) /
+      //    this.props.samples
+      //  }
+      // />
       <g
         className="SongBall"
         id={`ball${this.props.index}`}
         transform={`translate(${this.state.parentRadius + this.state.pos.x}, ${
           this.state.parentRadius + this.state.pos.y
         })`}
+        onMouseEnter={() => this.props.center(this.state.image.jsx)}
+        onMouseLeave={() => this.props.center(null)}
       >
-        {' '}
-        <Color
-          src={this.props.track.album.images[0].url}
-          crossOrigin="anonymous"
-          format="hex"
-          quality={this.props.track.album.images[0].width / this.props.samples}
-        >
-          {({ data, loading, error }) => (
-            <circle fill={loading ? 'white' : data}>
-              <animate
-                ref={svgAnimate => {
-                  this.svgAnimate = svgAnimate;
-                }}
-                attributeName="r"
-                dur="200ms"
-                begin="indefinite"
-                fill="freeze"
-                from={0}
-                to={this.state.radius}
-              />
-            </circle>
-          )}
-        </Color>
+        <circle fill={'black'}>
+          <animate
+            ref={svgAnimate => {
+              this.svgAnimate = svgAnimate;
+            }}
+            attributeName="r"
+            dur="200ms"
+            begin="indefinite"
+            fill="freeze"
+            from={0}
+            to={this.state.radius}
+          />
+        </circle>
+        <foreignObject>{this.state.image.jsx}</foreignObject>
       </g>
     );
   }
 }
 
 SongBall.defaultProps = {
-  resizeDebounce: 100,
-  turnAngle: (1 + Math.sqrt(5)) / 2,
   index: 0,
   total: 1,
   radius: 20,
-  minRadius: 10,
   parentRadius: 100,
-  targetDensity: 5,
   animationLength: 600,
-  samples: 10,
+  samples: 32,
 };

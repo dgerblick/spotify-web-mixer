@@ -6,11 +6,8 @@
     transition: all 0.2s;
   }
 
-  foreignObject {
+  image {
     display: none;
-    div {
-      background-color: black;
-    }
   }
 
   &:hover {
@@ -18,7 +15,7 @@
       transform: scale(2);
     }
 
-    foreignObject {
+    image {
       display: block;
     }
   }
