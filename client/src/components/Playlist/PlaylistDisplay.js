@@ -20,6 +20,7 @@ export default class PlaylistDisplay extends Component {
       ballRadius: 0,
       tracks: [],
       ready: 0,
+      center: {},
     };
   }
 
@@ -60,7 +61,6 @@ export default class PlaylistDisplay extends Component {
       };
       value.radius = ballRadius;
     });
-    this.updateCenter(this.state.center);
     this.setState({
       radius,
       ballRadius,
@@ -113,8 +113,8 @@ export default class PlaylistDisplay extends Component {
     }
   }
 
-  updateCenter(image) {
-    this.setState({ center: image });
+  updateCenter(newCenter) {
+    this.setState({ center: { ...newCenter } });
   }
 
   componentDidMount() {
@@ -152,7 +152,7 @@ export default class PlaylistDisplay extends Component {
                     parentRadius={this.state.radius}
                     radius={value.radius}
                     center={this.updateCenter}
-                    track={value.track}
+                    track={value}
                     className={this.state.ready === 1 ? 'ready' : 'notReady'}
                   />
                   {false &&
@@ -181,18 +181,92 @@ export default class PlaylistDisplay extends Component {
                     })}
                 </g>
               ))}
-            </svg>
-            {this.state.center || (
-              <img
-                src={this.props.location.state.image.url}
-                alt={this.props.location.state.data.name}
-                className="playlistCover"
-                style={{
-                  width: this.state.radius / 2,
-                  height: this.state.radius / 2,
-                }}
+              <defs>
+                <pattern
+                  id="center"
+                  x="0%"
+                  y="0%"
+                  height="100%"
+                  width="100%"
+                  viewBox={
+                    '0 0 ' + this.state.radius / 2 + ' ' + this.state.radius / 2
+                  }
+                >
+                  {this.state.center.image || (
+                    <image
+                      href={this.props.location.state.image.url}
+                      width={this.state.radius / 2}
+                      height={this.state.radius / 2}
+                      x="0"
+                      y="0"
+                      preserveAspectRatio="none"
+                    />
+                  )}
+                </pattern>
+              </defs>
+              <circle
+                cx={this.state.radius}
+                cy={this.state.radius}
+                r={this.state.radius / 4}
+                fill="url(#center)"
               />
-            )}
+              <text
+                fontSize={this.props.centerFontSize}
+                textLength={
+                  this.state.center.title?.length > this.props.centerFontSize
+                    ? (Math.PI * this.state.radius) / 4
+                    : ''
+                }
+              >
+                <textPath
+                  startOffset="50%"
+                  textAnchor="middle"
+                  path={`M ${
+                    (3 * this.state.radius) / 4 - this.props.centerFontSize
+                  } ${this.state.radius} a ${
+                    this.state.radius / 4 + this.props.centerFontSize
+                  } ${
+                    this.state.radius / 4 + this.props.centerFontSize
+                  } 0 0 1 ${
+                    2 * (this.state.radius / 4 + this.props.centerFontSize)
+                  } 0`}
+                >
+                  {this.state.center.title}
+                </textPath>
+              </text>
+              <text
+                fontSize={this.props.centerFontSize}
+                textLength={(Math.PI * this.state.radius) / 8}
+              ></text>
+              <text
+                fontSize={this.props.centerFontSize}
+                textLength={
+                  this.state.center.artists?.length > this.props.centerFontSize
+                    ? (Math.PI * this.state.radius) / 4
+                    : ''
+                }
+              >
+                <textPath
+                  startOffset="50%"
+                  textAnchor="middle"
+                  path={`M ${
+                    (3 * this.state.radius) / 4 - this.props.centerFontSize
+                  } ${this.state.radius} a ${
+                    this.state.radius / 4 + this.props.centerFontSize
+                  } ${
+                    this.state.radius / 4 + this.props.centerFontSize
+                  } 0 0 0 ${
+                    2 * (this.state.radius / 4 + this.props.centerFontSize)
+                  } 0`}
+                >
+                  {this.state.center.artists}
+                </textPath>
+              </text>
+              <text
+                fontSize={this.props.centerFontSize}
+                textLength={(Math.PI * this.state.radius) / 8}
+              ></text>
+            </svg>
           </div>
         )}
       </Measure>
@@ -203,8 +277,8 @@ export default class PlaylistDisplay extends Component {
 PlaylistDisplay.defaultProps = {
   resizeDebounce: 100,
   minBallRadius: 10,
-  targetBallDensity: 1/1000,
+  targetBallDensity: 1 / 1000,
   turnAngle: (1 + Math.sqrt(5)) / 2,
   lineWidth: 0.05,
-  samples: 64,
+  centerFontSize: 24,
 };
