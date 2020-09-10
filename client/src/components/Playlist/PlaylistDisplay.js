@@ -131,7 +131,7 @@ export default class PlaylistDisplay extends Component {
       >
         {({ measureRef }) => (
           <div ref={measureRef} className="PlaylistDisplay">
-            <svg className="canvas">
+            <svg className="canvas" xmlns="http://www.w3.org/2000/svg">
               {this.state.ready !== 1 && (
                 <circle
                   id="loadingProgress"
@@ -144,128 +144,96 @@ export default class PlaylistDisplay extends Component {
                   }
                 />
               )}
-              {this.state.tracks.map((value, index) => (
-                <g key={`group${index}`}>
+              <g className="nodes">
+                {this.state.tracks.map((value, index) => (
                   <SongBall
                     pos={value.pos}
-                    key={`ball${index}`}
+                    key={value.track.id}
                     parentRadius={this.state.radius}
                     radius={value.radius}
                     center={this.updateCenter}
                     track={value}
                     className={this.state.ready === 1 ? 'ready' : 'notReady'}
                   />
-                  {false &&
-                    this.state.tracks.slice(index).map((subValue, subIndex) => {
-                      if (
-                        value.camelot === subValue.camelot ||
-                        mod(value.camelot + 2, 24) === subValue.camelot ||
-                        mod(value.camelot - 2, 24) === subValue.camelot ||
-                        Math.floor(value.camelot / 2) ===
-                          Math.floor(subValue.camelot / 2)
-                      )
-                        return (
-                          <line
-                            key={`line${index}-${subIndex}`}
-                            x1={value.pos.x + this.state.radius}
-                            y1={value.pos.y + this.state.radius}
-                            x2={subValue.pos.x + this.state.radius}
-                            y2={subValue.pos.y + this.state.radius}
-                            style={{
-                              stroke: 'black',
-                              strokeWidth: this.props.lineWidth * value.radius,
-                            }}
-                          />
-                        );
-                      else return null;
-                    })}
+                  //{false &&
+                  //  this.state.tracks.slice(index).map((subValue, subIndex) => {
+                  //    if (
+                  //      value.camelot === subValue.camelot ||
+                  //      mod(value.camelot + 2, 24) === subValue.camelot ||
+                  //      mod(value.camelot - 2, 24) === subValue.camelot ||
+                  //      Math.floor(value.camelot / 2) ===
+                  //        Math.floor(subValue.camelot / 2)
+                  //    )
+                  //      return (
+                  //        <line
+                  //          key={`line${index}-${subIndex}`}
+                  //          x1={value.pos.x + this.state.radius}
+                  //          y1={value.pos.y + this.state.radius}
+                  //          x2={subValue.pos.x + this.state.radius}
+                  //          y2={subValue.pos.y + this.state.radius}
+                  //          style={{
+                  //            stroke: 'black',
+                  //            strokeWidth: this.props.lineWidth * value.radius,
+                  //          }}
+                  //        />
+                  //      );
+                  //    else return null;
+                  //  })}
+                ))}
+              </g>
+              {this.state.center.id ? (
+                <g>
+                  {this.state.center.image}
+                  <text
+                    fontSize={this.props.centerFontSize}
+                    textAnchor="middle"
+                    x={this.state.radius}
+                    y={0.75 * this.state.radius - this.props.centerFontSize / 2}
+                    width={this.state.radius * 2}
+                  >
+                    {this.state.center.title}
+                  </text>
+                  <text
+                    fontSize={this.props.centerFontSize}
+                    textAnchor="middle"
+                    x={this.state.radius}
+                    y={1.25 * this.state.radius + this.props.centerFontSize}
+                    width={this.state.radius * 2}
+                  >
+                    {this.state.center.artists}
+                  </text>
                 </g>
-              ))}
-              <defs>
-                <pattern
-                  id="center"
-                  x="0%"
-                  y="0%"
-                  height="100%"
-                  width="100%"
-                  viewBox={
-                    '0 0 ' + this.state.radius / 2 + ' ' + this.state.radius / 2
-                  }
-                >
-                  {this.state.center.image || (
-                    <image
-                      href={this.props.location.state.image.url}
-                      width={this.state.radius / 2}
-                      height={this.state.radius / 2}
-                      x="0"
-                      y="0"
-                      preserveAspectRatio="none"
-                    />
-                  )}
-                </pattern>
-              </defs>
-              <circle
-                cx={this.state.radius}
-                cy={this.state.radius}
-                r={this.state.radius / 4}
-                fill="url(#center)"
-              />
-              <text
-                fontSize={this.props.centerFontSize}
-                textLength={
-                  this.state.center.title?.length > this.props.centerFontSize
-                    ? (Math.PI * this.state.radius) / 4
-                    : ''
-                }
-              >
-                <textPath
-                  startOffset="50%"
-                  textAnchor="middle"
-                  path={`M ${
-                    (3 * this.state.radius) / 4 - this.props.centerFontSize
-                  } ${this.state.radius} a ${
-                    this.state.radius / 4 + this.props.centerFontSize
-                  } ${
-                    this.state.radius / 4 + this.props.centerFontSize
-                  } 0 0 1 ${
-                    2 * (this.state.radius / 4 + this.props.centerFontSize)
-                  } 0`}
-                >
-                  {this.state.center.title}
-                </textPath>
-              </text>
-              <text
-                fontSize={this.props.centerFontSize}
-                textLength={(Math.PI * this.state.radius) / 8}
-              ></text>
-              <text
-                fontSize={this.props.centerFontSize}
-                textLength={
-                  this.state.center.artists?.length > this.props.centerFontSize
-                    ? (Math.PI * this.state.radius) / 4
-                    : ''
-                }
-              >
-                <textPath
-                  startOffset="50%"
-                  textAnchor="middle"
-                  path={`M ${
-                    (3 * this.state.radius) / 4 - this.props.centerFontSize
-                  } ${this.state.radius} a ${
-                    this.state.radius / 4 + this.props.centerFontSize
-                  } ${
-                    this.state.radius / 4 + this.props.centerFontSize
-                  } 0 0 0 ${
-                    2 * (this.state.radius / 4 + this.props.centerFontSize)
-                  } 0`}
-                >
-                  {this.state.center.artists}
-                </textPath>
-              </text>
-              <text
-                fontSize={this.props.centerFontSize}
-                textLength={(Math.PI * this.state.radius) / 8}
-              ></text>
+              ) : (
+                <g id="testtest">
+                  <defs>
+                    <pattern
+                      id="center"
+                      x="0%"
+                      y="0%"
+                      height="100%"
+                      width="100%"
+                      viewBox={`0 0 ${this.state.radius / 2} ${
+                        this.state.radius / 2
+                      }`}
+                    >
+                      <image
+                        href={this.props.location.state.image.url}
+                        width={this.state.radius / 2}
+                        height={this.state.radius / 2}
+                        x="0"
+                        y="0"
+                        preserveAspectRatio="none"
+                      />
+                    </pattern>
+                  </defs>
+                  <circle
+                    cx={this.state.radius}
+                    cy={this.state.radius}
+                    r={this.state.radius / 4}
+                    fill="url(#center)"
+                  />
+                </g>
+              )}
             </svg>
           </div>
         )}

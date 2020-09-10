@@ -16,23 +16,21 @@ export default class SongBall extends Component {
     return (
       <g
         className="SongBall"
-        id={`ball${this.props.index}`}
         transform={`translate(${this.state.parentRadius + this.state.pos.x}, ${
           this.state.parentRadius + this.state.pos.y
         })`}
         onMouseEnter={() =>
           this.props.center({
+            id: this.state.track.track.id,
             title: this.state.track.track.name,
-            artists: this.state.track.track.artists
-              .map(e => e.name)
-              .join(', '),
+            artists: this.state.track.track.artists.map(e => e.name).join(', '),
             image: (
               <image
                 href={this.state.track.track.album.images[0].url}
-                width={(Math.SQRT2 * this.state.parentRadius) / 4}
-                height={(Math.SQRT2 * this.state.parentRadius) / 4}
-                x={(this.state.parentRadius * (2 - Math.SQRT2)) / 8}
-                y={(this.state.parentRadius * (2 - Math.SQRT2)) / 8}
+                width={this.state.parentRadius / 2}
+                height={this.state.parentRadius / 2}
+                x={0.75 * this.state.parentRadius}
+                y={0.75 * this.state.parentRadius}
                 preserveAspectRatio="none"
               />
             ),
@@ -41,9 +39,10 @@ export default class SongBall extends Component {
         onMouseLeave={this.props.center}
       >
         <circle
+          id={`ball-${this.state.track.track.id}`}
           fill={SongBall.getColor(
             this.state.track.camelot / 24,
-            1 + this.state.track.audio_features.loudness / 60,
+            1,
             this.state.track.audio_features.danceability
           )}
           stroke="black"
