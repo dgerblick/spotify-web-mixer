@@ -8,20 +8,15 @@ export default class SongBall extends Component {
     this.state = {};
   }
 
-  componentDidMount() {
-    this.svgAnimate.beginElementAt(this.props.index / this.props.total);
-  }
-
   render() {
     return (
       <g
         className="SongBall"
-        transform={`translate(${this.state.parentRadius + this.state.pos.x}, ${
-          this.state.parentRadius + this.state.pos.y
-        })`}
+        transform={`translate(${this.state.pos.x}, ${this.state.pos.y})`}
         onMouseEnter={() =>
           this.props.center({
             id: this.state.track.track.id,
+            transform: `translate(${this.state.pos.x}, ${this.state.pos.y})`,
             title: this.state.track.track.name,
             artists: this.state.track.track.artists.map(e => e.name).join(', '),
             image: (
@@ -36,29 +31,17 @@ export default class SongBall extends Component {
             ),
           })
         }
-        onMouseLeave={this.props.center}
       >
         <circle
-          id={`ball-${this.state.track.track.id}`}
+          id={this.state.track.track.id}
           fill={SongBall.getColor(
             this.state.track.camelot / 24,
             1,
             this.state.track.audio_features.danceability
           )}
           stroke="black"
-        >
-          <animate
-            ref={svgAnimate => {
-              this.svgAnimate = svgAnimate;
-            }}
-            attributeName="r"
-            dur="200ms"
-            begin="indefinite"
-            fill="freeze"
-            from={0}
-            to={this.state.radius}
-          />
-        </circle>
+          r={this.state.radius}
+        />
       </g>
     );
   }
@@ -69,7 +52,10 @@ export default class SongBall extends Component {
       props.radius !== state.radius
     ) {
       return {
-        pos: props.pos,
+        pos: {
+          x: props.pos.x + props.parentRadius,
+          y: props.pos.y + props.parentRadius,
+        },
         parentRadius: props.parentRadius,
         radius: props.radius,
         track: props.track,

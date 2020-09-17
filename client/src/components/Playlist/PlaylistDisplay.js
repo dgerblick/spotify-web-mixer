@@ -190,6 +190,7 @@ export default class PlaylistDisplay extends Component {
                     x={this.state.radius}
                     y={0.75 * this.state.radius - this.props.centerFontSize / 2}
                     width={this.state.radius * 2}
+                    id="test12"
                   >
                     {this.state.center.title}
                   </text>
@@ -202,9 +203,18 @@ export default class PlaylistDisplay extends Component {
                   >
                     {this.state.center.artists}
                   </text>
+                  <g
+                    className="selected"
+                    transform={this.state.center.transform}
+                  >
+                    <use
+                      href={`#${this.state.center.id}`}
+                      onMouseLeave={() => this.updateCenter({})}
+                    />
+                  </g>
                 </g>
               ) : (
-                <g id="testtest">
+                <g>
                   <defs>
                     <pattern
                       id="center"
