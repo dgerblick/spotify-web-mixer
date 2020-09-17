@@ -18,7 +18,8 @@ export default class PlaylistDisplay extends Component {
       total: this.props.location.state.data.tracks.total,
       radius: 0,
       ballRadius: 0,
-      tracks: [],
+      tracks: {},
+      trackKeys: [],
       ready: 0,
       center: {},
     };
@@ -34,7 +35,7 @@ export default class PlaylistDisplay extends Component {
       this.props.minBallRadius
     );
     let tracks = this.state.tracks;
-    async.eachOf(tracks, (value, index) => {
+    async.eachOf(this.state.trackKeys, (key, index) => {
       let fibbFill = Math.min(
         this.props.targetBallDensity * this.state.total,
         0.9
@@ -55,11 +56,11 @@ export default class PlaylistDisplay extends Component {
                 this.props.turnAngle +
                 (1 - fibbFill)
             );
-      value.pos = {
+      tracks[key].pos = {
         x: r * Math.sin(theta),
         y: -r * Math.cos(theta),
       };
-      value.radius = ballRadius;
+      tracks[key].radius = ballRadius;
     });
     this.setState({
       radius,
@@ -94,7 +95,10 @@ export default class PlaylistDisplay extends Component {
               };
             });
             this.setState({
-              tracks: [...this.state.tracks, ...tracks],
+              tracks: {
+                ...this.state.tracks,
+                ...tracks.reduce((a, v) => ({ ...a, [v.track.id]: v }), {}),
+              },
               ready:
                 (this.state.tracks.length + tracks.length) /
                 (this.state.total + 1),
@@ -104,9 +108,24 @@ export default class PlaylistDisplay extends Component {
       });
     } else {
       let tracks = this.state.tracks;
-      tracks.sort((a, b) => a.camelot - b.camelot);
+      async.eachOf(tracks, e1 => {
+        e1.neighbors = [];
+        async.eachOf(tracks, e2 => {
+          if (
+            e1.camelot === e2.camelot ||
+            mod(e1.camelot + 2, 24) === e2.camelot ||
+            mod(e1.camelot - 2, 24) === e2.camelot ||
+            Math.floor(e1.camelot / 2) === Math.floor(e2.camelot / 2)
+          ) {
+            e1.neighbors.push(e2.track.id);
+          }
+        });
+      });
+      let trackKeys = Object.keys(tracks);
+      trackKeys.sort((a, b) => tracks[a].camelot - tracks[b].camelot);
       this.setState({
         tracks,
+        trackKeys,
         ready: 0.99,
       });
       this.resize();
@@ -118,7 +137,7 @@ export default class PlaylistDisplay extends Component {
   }
 
   componentDidMount() {
-    if (this.state.tracks.length === 0) {
+    if (Object.keys(this.state.tracks).length === 0) {
       this.getTrackPage(this.props.location.state.data.tracks.href);
     }
   }
@@ -145,14 +164,14 @@ export default class PlaylistDisplay extends Component {
                 />
               )}
               <g className="nodes">
-                {this.state.tracks.map((value, index) => (
+                {this.state.trackKeys.map(key => (
                   <SongBall
-                    pos={value.pos}
-                    key={value.track.id}
+                    pos={this.state.tracks[key].pos}
+                    key={this.state.tracks[key].track.id}
                     parentRadius={this.state.radius}
-                    radius={value.radius}
+                    radius={this.state.tracks[key].radius}
                     center={this.updateCenter}
-                    track={value}
+                    track={this.state.tracks[key]}
                     className={this.state.ready === 1 ? 'ready' : 'notReady'}
                   />
                   //{false &&
