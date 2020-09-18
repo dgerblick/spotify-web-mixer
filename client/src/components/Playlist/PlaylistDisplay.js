@@ -7,6 +7,29 @@ import './PlaylistDisplay.scss';
 import SongBall from '../Song/SongBall';
 
 const mod = (n, m) => ((n % m) + m) % m;
+const getColor = (hue, saturation, lightness) => {
+  let chroma = (1 - Math.abs(2 * lightness - 1)) * saturation;
+  let intermediate = chroma * (1 - Math.abs(((hue * 6) % 2) - 1));
+  let match = lightness - chroma / 2;
+  return (
+    '#' +
+    ((h, c, x) => {
+      if (0 <= h && h <= 1) return [c, x, 0];
+      else if (1 < h && h <= 2) return [x, c, 0];
+      else if (2 < h && h <= 3) return [0, c, x];
+      else if (3 < h && h <= 4) return [0, x, c];
+      else if (4 < h && h <= 5) return [x, 0, c];
+      else if (5 < h && h <= 6) return [c, 0, x];
+      else return [0, 0, 0];
+    })(hue * 6, chroma, intermediate)
+      .map(e =>
+        Math.min(Math.floor(255 * (e + match)), 255)
+          .toString(16)
+          .padStart(2, '0')
+      )
+      .join('')
+  );
+};
 
 export default class PlaylistDisplay extends Component {
   constructor(props) {
@@ -20,6 +43,7 @@ export default class PlaylistDisplay extends Component {
       ballRadius: 0,
       tracks: {},
       trackKeys: [],
+      trackConnections: [],
       ready: 0,
       center: {},
     };
@@ -73,34 +97,37 @@ export default class PlaylistDisplay extends Component {
   getTrackPage(location) {
     if (location != null) {
       axios.get(location).then(res => {
-        let tracks = res.data.items;
+        let trackArray = res.data.items;
         let next = res.data.next;
         axios
           .get(
             'https://api.spotify.com/v1/audio-features?ids=' +
-              tracks.map(e => e.track.id).join(',')
+              trackArray.map(e => e.track.id).join(',')
           )
           .then(res => {
-            async.eachOf(tracks, (e, i) => {
-              e.audio_features = res.data.audio_features[i];
-              e.camelot = mod(
-                16 -
-                  10 * res.data.audio_features[i].key +
-                  7 * res.data.audio_features[i].mode,
-                24
-              );
-              e.pos = {
-                x: 0,
-                y: 0,
+            async.eachOf(trackArray, (track, index) => {
+              let features = res.data.audio_features[index];
+              let camelot = mod(16 - 10 * features.key + 7 * features.mode, 24);
+              trackArray[index] = {
+                ...track,
+                audio_features: features,
+                camelot: camelot,
+                pos: {
+                  x: 0,
+                  y: 0,
+                },
+                color: getColor(camelot / 24, 1, features.danceability),
               };
             });
+
+            let tracks = trackArray.reduce(
+              (accum, track) => ({ ...accum, [track.track.id]: track }),
+              {}
+            );
             this.setState({
-              tracks: {
-                ...this.state.tracks,
-                ...tracks.reduce((a, v) => ({ ...a, [v.track.id]: v }), {}),
-              },
+              tracks: { ...this.state.tracks, ...tracks },
               ready:
-                (this.state.tracks.length + tracks.length) /
+                (Object.keys(this.state.tracks).length + trackArray.length) /
                 (this.state.total + 1),
             });
             this.getTrackPage(next);
@@ -108,21 +135,29 @@ export default class PlaylistDisplay extends Component {
       });
     } else {
       let tracks = this.state.tracks;
-      async.eachOf(tracks, e1 => {
-        e1.neighbors = [];
-        async.eachOf(tracks, e2 => {
-          if (
-            e1.camelot === e2.camelot ||
-            mod(e1.camelot + 2, 24) === e2.camelot ||
-            mod(e1.camelot - 2, 24) === e2.camelot ||
-            Math.floor(e1.camelot / 2) === Math.floor(e2.camelot / 2)
-          ) {
-            e1.neighbors.push(e2.track.id);
-          }
-        });
-      });
       let trackKeys = Object.keys(tracks);
-      trackKeys.sort((a, b) => tracks[a].camelot - tracks[b].camelot);
+
+      let camelotBins = Array.from(Array(24), () => []);
+      trackKeys.forEach(key => camelotBins[tracks[key].camelot].push(key));
+
+      let connections = [];
+      trackKeys = [];
+      camelotBins.forEach((camelot, index) => {
+        trackKeys.push(...camelot);
+        connections.push([
+          ...camelotBins[mod(index + 2, 24)],
+          ...camelotBins[mod(index - 2, 24)],
+          ...camelotBins[mod(2 * Math.floor(index / 2), 24)],
+          ...camelotBins[mod(2 * Math.floor(index / 2) + 1, 24)],
+        ]);
+      });
+
+      async.each(tracks, track => {
+        track.neighbors = connections[track.camelot].filter(
+          key => key !== track.track.id
+        );
+      });
+
       this.setState({
         tracks,
         trackKeys,
@@ -150,13 +185,19 @@ export default class PlaylistDisplay extends Component {
       >
         {({ measureRef }) => (
           <div ref={measureRef} className="PlaylistDisplay">
-            <svg className="canvas" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              className="canvas"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox={`${-this.state.radius} ${-this.state.radius} ${
+                2 * this.state.radius
+              } ${2 * this.state.radius}`}
+            >
               {this.state.ready !== 1 && (
                 <circle
                   id="loadingProgress"
                   r={this.state.radius / 2}
-                  cx={this.state.radius}
-                  cy={this.state.radius}
+                  cx={0}
+                  cy={0}
                   strokeDasharray={Math.PI * this.state.radius}
                   strokeDashoffset={
                     Math.PI * this.state.radius * (1 - this.state.ready)
@@ -168,46 +209,28 @@ export default class PlaylistDisplay extends Component {
                   <SongBall
                     pos={this.state.tracks[key].pos}
                     key={this.state.tracks[key].track.id}
-                    parentRadius={this.state.radius}
                     radius={this.state.tracks[key].radius}
                     center={this.updateCenter}
                     track={this.state.tracks[key]}
                     className={this.state.ready === 1 ? 'ready' : 'notReady'}
                   />
-                  //{false &&
-                  //  this.state.tracks.slice(index).map((subValue, subIndex) => {
-                  //    if (
-                  //      value.camelot === subValue.camelot ||
-                  //      mod(value.camelot + 2, 24) === subValue.camelot ||
-                  //      mod(value.camelot - 2, 24) === subValue.camelot ||
-                  //      Math.floor(value.camelot / 2) ===
-                  //        Math.floor(subValue.camelot / 2)
-                  //    )
-                  //      return (
-                  //        <line
-                  //          key={`line${index}-${subIndex}`}
-                  //          x1={value.pos.x + this.state.radius}
-                  //          y1={value.pos.y + this.state.radius}
-                  //          x2={subValue.pos.x + this.state.radius}
-                  //          y2={subValue.pos.y + this.state.radius}
-                  //          style={{
-                  //            stroke: 'black',
-                  //            strokeWidth: this.props.lineWidth * value.radius,
-                  //          }}
-                  //        />
-                  //      );
-                  //    else return null;
-                  //  })}
                 ))}
               </g>
               {this.state.center.id ? (
                 <g>
-                  {this.state.center.image}
+                  <image
+                    href={this.state.center.image}
+                    width={this.state.radius / 2}
+                    height={this.state.radius / 2}
+                    x={-this.state.radius / 4}
+                    y={-this.state.radius / 4}
+                    preserveAspectRatio="none"
+                  />
                   <text
                     fontSize={this.props.centerFontSize}
                     textAnchor="middle"
-                    x={this.state.radius}
-                    y={0.75 * this.state.radius - this.props.centerFontSize / 2}
+                    x={0}
+                    y={-this.state.radius / 4 - this.props.centerFontSize / 2}
                     width={this.state.radius * 2}
                     id="test12"
                   >
@@ -216,16 +239,34 @@ export default class PlaylistDisplay extends Component {
                   <text
                     fontSize={this.props.centerFontSize}
                     textAnchor="middle"
-                    x={this.state.radius}
-                    y={1.25 * this.state.radius + this.props.centerFontSize}
+                    x={0}
+                    y={this.state.radius / 4 + this.props.centerFontSize}
                     width={this.state.radius * 2}
                   >
                     {this.state.center.artists}
                   </text>
                   <g
                     className="selected"
-                    transform={this.state.center.transform}
+                    transform={`translate(${this.state.center.pos.x}, ${this.state.center.pos.y})`}
                   >
+                    <g className="connections">
+                      {this.state.center.neighbors.map(key => {
+                        let neighbor = this.state.tracks[key];
+                        let x = neighbor.pos.x - this.state.center.pos.x;
+                        let y = neighbor.pos.y - this.state.center.pos.y;
+                        let xArc = x / 2 - y / 4;
+                        let yArc = y / 2 - x / 4;
+                        return (
+                          <path
+                            key={key}
+                            d={`M 0 0 Q ${xArc} ${yArc} ${x} ${y}`}
+                            stroke={neighbor.color}
+                            strokeWidth={this.props.lineWidth}
+                            fill="none"
+                          />
+                        );
+                      })}
+                    </g>
                     <use
                       href={`#${this.state.center.id}`}
                       onMouseLeave={() => this.updateCenter({})}
@@ -256,8 +297,8 @@ export default class PlaylistDisplay extends Component {
                     </pattern>
                   </defs>
                   <circle
-                    cx={this.state.radius}
-                    cy={this.state.radius}
+                    cx={0}
+                    cy={0}
                     r={this.state.radius / 4}
                     fill="url(#center)"
                   />
@@ -276,6 +317,6 @@ PlaylistDisplay.defaultProps = {
   minBallRadius: 10,
   targetBallDensity: 1 / 1000,
   turnAngle: (1 + Math.sqrt(5)) / 2,
-  lineWidth: 0.05,
+  lineWidth: 2,
   centerFontSize: 24,
 };

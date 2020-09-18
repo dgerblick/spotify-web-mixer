@@ -16,29 +16,17 @@ export default class SongBall extends Component {
         onMouseEnter={() =>
           this.props.center({
             id: this.state.track.track.id,
-            transform: `translate(${this.state.pos.x}, ${this.state.pos.y})`,
+            pos: this.state.pos,
             title: this.state.track.track.name,
             artists: this.state.track.track.artists.map(e => e.name).join(', '),
-            image: (
-              <image
-                href={this.state.track.track.album.images[0].url}
-                width={this.state.parentRadius / 2}
-                height={this.state.parentRadius / 2}
-                x={0.75 * this.state.parentRadius}
-                y={0.75 * this.state.parentRadius}
-                preserveAspectRatio="none"
-              />
-            ),
+            image: this.state.track.track.album.images[0].url,
+            neighbors: this.state.track.neighbors,
           })
         }
       >
         <circle
           id={this.state.track.track.id}
-          fill={SongBall.getColor(
-            this.state.track.camelot / 24,
-            1,
-            this.state.track.audio_features.danceability
-          )}
+          fill={this.state.track.color}
           stroke="black"
           r={this.state.radius}
         />
@@ -47,16 +35,9 @@ export default class SongBall extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (
-      props.parentRadius !== state.parentRadius ||
-      props.radius !== state.radius
-    ) {
+    if (props.radius !== state.radius) {
       return {
-        pos: {
-          x: props.pos.x + props.parentRadius,
-          y: props.pos.y + props.parentRadius,
-        },
-        parentRadius: props.parentRadius,
+        pos: props.pos,
         radius: props.radius,
         track: props.track,
         image: props.track.track.album.images[0],
@@ -65,37 +46,12 @@ export default class SongBall extends Component {
       return null;
     }
   }
-
-  static getColor(hue, saturation, lightness) {
-    let chroma = (1 - Math.abs(2 * lightness - 1)) * saturation;
-    let intermediate = chroma * (1 - Math.abs(((hue * 6) % 2) - 1));
-    let match = lightness - chroma / 2;
-    return (
-      '#' +
-      ((h, c, x) => {
-        if (0 <= h && h <= 1) return [c, x, 0];
-        else if (1 < h && h <= 2) return [x, c, 0];
-        else if (2 < h && h <= 3) return [0, c, x];
-        else if (3 < h && h <= 4) return [0, x, c];
-        else if (4 < h && h <= 5) return [x, 0, c];
-        else if (5 < h && h <= 6) return [c, 0, x];
-        else return [0, 0, 0];
-      })(hue * 6, chroma, intermediate)
-        .map(e =>
-          Math.min(Math.floor(255 * (e + match)), 255)
-            .toString(16)
-            .padStart(2, '0')
-        )
-        .join('')
-    );
-  }
 }
 
 SongBall.defaultProps = {
   index: 0,
   total: 1,
   radius: 20,
-  parentRadius: 100,
   animationLength: 600,
   samples: 32,
 };
