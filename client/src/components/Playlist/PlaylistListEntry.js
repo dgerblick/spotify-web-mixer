@@ -51,11 +51,8 @@ export default class PlaylistListEntry extends Component {
       <Link
         className="PlaylistListEntry"
         to={{
-          pathname: `/playlist/${this.props.data.id}`,
-          state: {
-            data: this.props.data,
-            image: this.state.image,
-          }
+          pathname: `/playlists/${this.props.data.id}`,
+          state: this.props.data,
         }}
       >
         <div className="playlistCard">
