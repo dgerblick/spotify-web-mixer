@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import async, { compose } from 'async';
-import GraphCanvas from './GraphCanvas';
+import async from 'async';
+import SongVertex from './SongVertex';
 
 const mod = (n, m) => ((n % m) + m) % m;
 
@@ -103,12 +103,28 @@ const SongGraph = props => {
       .then(tracks => processTracks(tracks))
       .then(tracks => setTracks(tracks));
   }, []);
-
   return (
-    <div className="SongGraph">
-      <GraphCanvas />
-    </div>
+    <svg
+      className="SongGraph"
+      viewBox={
+        -props.size +
+        ' ' +
+        -props.size +
+        ' ' +
+        2 * props.size +
+        ' ' +
+        2 * props.size
+      }
+    >
+      {tracks?.ids.map(id => (
+        <SongVertex key={id} track={tracks.tracks[id]} />
+      ))}
+    </svg>
   );
+};
+
+SongGraph.defaultProps = {
+  size: 100,
 };
 
 export default SongGraph;
