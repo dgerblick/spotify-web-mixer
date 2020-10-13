@@ -97,7 +97,7 @@ const SongGraph = props => {
   // Run on inital render
   useEffect(() => {
     axios
-      .get('https://api.spotify.com/v1' + props.location.pathname)
+      .get('https://api.spotify.com/v1' + props.pathname)
       .then(res => {
         setPlaylist(res.data);
         return res.data.tracks;

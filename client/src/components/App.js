@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import './App.scss';
-import PlaylistList from '../Playlist/PlaylistList';
-import PlaylistDisplay from '../Playlist/PlaylistDisplay';
-import { SongGraph } from '../SongGraph';
+import PlaylistList from './Playlist/PlaylistList';
+import PlaylistDisplay from './PlaylistDisplay';
+import './index.scss';
 
 const cookies = new Cookies();
 
@@ -37,7 +36,7 @@ export default class App extends Component {
     return (
       <Router className="App">
         <Switch>
-          <Route path="/playlists" component={SongGraph} />
+          <Route path="/playlists" component={PlaylistDisplay} />
           <Route path="/" component={PlaylistList} />
         </Switch>
       </Router>
