@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import async from 'async';
 import SongVertex from './SongVertex';
+import './index.scss'
 
 const mod = (n, m) => ((n % m) + m) % m;
 
@@ -40,8 +41,9 @@ const getTracks = async tracks => {
 const processTracks = async tracks => {
   let trackDict = {};
   // Slice into groups of 100 (max number of tracks/request)
-  for (let start = 0; start < tracks.length; start += 100) {
-    let chunk = tracks.slice(start, start + 100);
+  const groupSize = 100;
+  for (let start = 0; start < tracks.length; start += groupSize) {
+    let chunk = tracks.slice(start, start + groupSize);
     await axios
       .get(
         'https://api.spotify.com/v1/audio-features?ids=' +
@@ -90,6 +92,7 @@ const SongGraph = props => {
   // Hooks
   const [playlist, setPlaylist] = useState();
   const [tracks, setTracks] = useState();
+  const [bounds, setBounds] = useState();
 
   // Run on inital render
   useEffect(() => {
@@ -103,28 +106,22 @@ const SongGraph = props => {
       .then(tracks => processTracks(tracks))
       .then(tracks => setTracks(tracks));
   }, []);
+
+  let ballRadius = Math.max(0.02, 0.5 * Math.PI / tracks?.ids.length)
+
   return (
-    <svg
-      className="SongGraph"
-      viewBox={
-        -props.size +
-        ' ' +
-        -props.size +
-        ' ' +
-        2 * props.size +
-        ' ' +
-        2 * props.size
-      }
-    >
-      {tracks?.ids.map(id => (
-        <SongVertex key={id} track={tracks.tracks[id]} />
+    <svg className="SongGraph" viewBox="-1 -1 2 2">
+      {tracks?.ids.map((id, index) => (
+        <SongVertex
+          key={id}
+          track={tracks.tracks[id]}
+          index={index}
+          total={tracks.ids.length}
+          radius={ballRadius}
+        />
       ))}
     </svg>
   );
-};
-
-SongGraph.defaultProps = {
-  size: 100,
 };
 
 export default SongGraph;
