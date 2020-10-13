@@ -17,12 +17,17 @@ const SongVertex = props => {
     );
   return (
     <g
-      className={'SongVertex' + (active ? ' center' : '')}
-      id={props.track.track.id}
-      transform={`translate(${r * Math.cos(theta)}, ${r * Math.sin(theta)})`}
+      className="SongVertex"
       onMouseEnter={() => props.setHover(props.track.track.id)}
     >
-      <circle className="ball" r={props.radius} fill={props.track.color} />
+      <circle
+        id={props.track.track.id}
+        className="ball"
+        cx={r * Math.cos(theta)}
+        cy={r * Math.sin(theta)}
+        r={props.radius * (props.hover === props.track.track.id ? 2 : 1)}
+        fill={props.track.color}
+      />
     </g>
   );
 };

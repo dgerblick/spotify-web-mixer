@@ -1,0 +1,55 @@
+@import '../common';
+
+.InfoPanel {
+  height: 100%;
+  width: 400px;
+  position: absolute;
+}
+
+.SongEntry {
+  transition: 0.5s;
+  width: 340px;
+  height: 100px;
+  padding: 20px;
+  margin: 20px 0;
+  background-color: $dark;
+  color: $light;
+  border-radius: 20px;
+  position: relative;
+
+  .albumCover {
+    height: 100%;
+    display: inline-block;
+  }
+
+  .songInfo {
+    display: inline-block;
+    margin: 0 20px;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 220px;
+    font-size: 18px;
+    
+    p {
+      margin: 40px 0;
+      position: absolute;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .songTitle {
+      top: 0;
+    }
+
+    .artists {
+      bottom: 0;
+    }
+  }
+
+  &:hover {
+    border-radius: 0;
+  }
+}
