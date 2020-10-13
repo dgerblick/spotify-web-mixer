@@ -1,7 +1,7 @@
 @import '../common';
 
 .SongGraph {
-  $size: 95vmin;
+  $size: 100vmin;
   width: $size;
   height: $size;
   margin: auto;
@@ -10,4 +10,18 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.SongVertex {
+  transform-origin: 50% 50%;
+
+  .ball {
+    transition: all 0.2s ease-out;
+  }
+
+  &:hover {
+    .ball {
+      transform: scale(2);
+    }
+  }
 }

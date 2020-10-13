@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import async from 'async';
 import SongVertex from './SongVertex';
-import './index.scss'
+import './index.scss';
 
 const mod = (n, m) => ((n % m) + m) % m;
 
@@ -92,7 +92,7 @@ const SongGraph = props => {
   // Hooks
   const [playlist, setPlaylist] = useState();
   const [tracks, setTracks] = useState();
-  const [bounds, setBounds] = useState();
+  const [hover, setHover] = useState('');
 
   // Run on inital render
   useEffect(() => {
@@ -107,10 +107,14 @@ const SongGraph = props => {
       .then(tracks => setTracks(tracks));
   }, []);
 
-  let ballRadius = Math.max(0.02, 0.5 * Math.PI / tracks?.ids.length)
+  let ballRadius = Math.max(0.02, (0.5 * Math.PI) / tracks?.ids.length);
 
   return (
-    <svg className="SongGraph" viewBox="-1 -1 2 2">
+    <svg
+      className="SongGraph"
+      viewBox="-1 -1 2 2"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       {tracks?.ids.map((id, index) => (
         <SongVertex
           key={id}
@@ -118,8 +122,12 @@ const SongGraph = props => {
           index={index}
           total={tracks.ids.length}
           radius={ballRadius}
+          setHover={setHover}
         />
       ))}
+      {hover !== '' && (
+        <use href={'#' + hover} width="1" height="1" x="0" y="0" />
+      )}
     </svg>
   );
 };

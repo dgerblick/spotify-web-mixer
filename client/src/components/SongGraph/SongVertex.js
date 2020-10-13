@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const SongVertex = props => {
+  const [active, setActive] = useState(false);
+
   let fill = Math.min(props.total / props.targetBallDensity, 0.9);
   let theta = (2 * Math.PI * props.index) / props.total;
   let r =
-    (1 - props.radius) *
+    (1 - 2 * props.radius) *
     Math.sqrt(
       (fill *
         ((props.index -
@@ -13,14 +15,15 @@ const SongVertex = props => {
         props.turnAngle +
         (1 - fill)
     );
-
   return (
-    <circle
-      cx={r * Math.cos(theta)}
-      cy={r * Math.sin(theta)}
-      r={props.radius}
-      fill={props.track.color}
-    />
+    <g
+      className={'SongVertex' + (active ? ' center' : '')}
+      id={props.track.track.id}
+      transform={`translate(${r * Math.cos(theta)}, ${r * Math.sin(theta)})`}
+      onMouseEnter={() => props.setHover(props.track.track.id)}
+    >
+      <circle className="ball" r={props.radius} fill={props.track.color} />
+    </g>
   );
 };
 
