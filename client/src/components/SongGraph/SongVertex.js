@@ -1,20 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 const SongVertex = props => {
-  const [active, setActive] = useState(false);
-
-  let fill = Math.min(props.total / props.targetBallDensity, 0.9);
-  let theta = (2 * Math.PI * props.index) / props.total;
-  let r =
-    (1 - 2 * props.radius) *
-    Math.sqrt(
-      (fill *
-        ((props.index -
-          (props.index * (props.total % props.turnAngle)) / props.total) %
-          props.turnAngle)) /
-        props.turnAngle +
-        (1 - fill)
-    );
   return (
     <g
       className="SongVertex"
@@ -23,21 +9,13 @@ const SongVertex = props => {
       <circle
         id={props.track.track.id}
         className="ball"
-        cx={r * Math.cos(theta)}
-        cy={r * Math.sin(theta)}
+        cx={props.data.pos.x}
+        cy={props.data.pos.y}
         r={props.radius * (props.hover === props.track.track.id ? 2 : 1)}
-        fill={props.track.color}
+        fill={props.data.color}
       />
     </g>
   );
-};
-
-SongVertex.defaultProps = {
-  radius: 0.02,
-  targetBallDensity: 1000,
-  turnAngle: (1 + Math.sqrt(5)) / 2,
-  lineWidth: 2,
-  centerFontSize: 24,
 };
 
 export default SongVertex;

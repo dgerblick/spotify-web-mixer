@@ -7,30 +7,6 @@ import { InfoPanel, SongEntry } from './InfoPanel';
 
 const mod = (n, m) => ((n % m) + m) % m;
 
-const getColor = (hue, saturation, lightness) => {
-  let chroma = (1 - Math.abs(2 * lightness - 1)) * saturation;
-  let intermediate = chroma * (1 - Math.abs(((hue * 6) % 2) - 1));
-  let match = lightness - chroma / 2;
-  return (
-    '#' +
-    ((h, c, x) => {
-      if (0 <= h && h <= 1) return [c, x, 0];
-      else if (1 < h && h <= 2) return [x, c, 0];
-      else if (2 < h && h <= 3) return [0, c, x];
-      else if (3 < h && h <= 4) return [0, x, c];
-      else if (4 < h && h <= 5) return [x, 0, c];
-      else if (5 < h && h <= 6) return [c, 0, x];
-      else return [0, 0, 0];
-    })(hue * 6, chroma, intermediate)
-      .map(e =>
-        Math.min(Math.floor(255 * (e + match)), 255)
-          .toString(16)
-          .padStart(2, '0')
-      )
-      .join('')
-  );
-};
-
 const getTracks = async tracks => {
   // Base case
   if (tracks.next === null) return tracks.items;
@@ -59,7 +35,6 @@ const processTracks = async tracks => {
             ...track,
             features,
             camelot,
-            color: getColor(camelot / 24, 1, features.danceability),
           };
         });
       });
@@ -110,7 +85,7 @@ const PlaylistDisplay = props => {
 
   return (
     <div className="PlaylistDisplay">
-      <SongGraph tracks={tracks} hover={hover} setHover={setHover} />
+      {tracks && <SongGraph tracks={tracks} hover={hover} setHover={setHover} />}
       <InfoPanel style={{ right: 0 }}>
         <Scrollbar style={{ maxHeight: '100%' }}>
           {tracks?.ids.byDefault.map(key => (
@@ -118,7 +93,7 @@ const PlaylistDisplay = props => {
               key={key}
               track={tracks.tracks[key]}
               onMouseEnter={() => setHover(key)}
-              onMouseExit={() => setHover('')}
+              //onMouseLeave={() => setHover('')}
             />
           ))}
         </Scrollbar>

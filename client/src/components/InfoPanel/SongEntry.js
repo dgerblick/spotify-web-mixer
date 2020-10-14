@@ -12,7 +12,7 @@ const SongEntry = props => {
       <img
         className="albumCover"
         src={props.track.track.album.images[0]?.url}
-        altText={props.track.track.name}
+        alt={props.track.track.name}
       />
       <div className="songInfo">
         <p className="songTitle">{props.track.track.name}</p>
