@@ -78,9 +78,9 @@ const PlaylistDisplay = props => {
     axios
       .get('https://api.spotify.com/v1' + props.location.pathname)
       .then(res => res.data.tracks)
-      .then(tracks => getTracks(tracks))
-      .then(tracks => processTracks(tracks))
-      .then(tracks => setTracks(tracks));
+      .then(getTracks)
+      .then(processTracks)
+      .then(setTracks);
   }, []);
 
   return (

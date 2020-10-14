@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import PlaylistList from './Playlist/PlaylistList';
+import { PlaylistList }from './PlaylistList';
 import PlaylistDisplay from './PlaylistDisplay';
 import './index.scss';
 
