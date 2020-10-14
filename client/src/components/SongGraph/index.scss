@@ -1,0 +1,20 @@
+@import '../common';
+
+.SongGraph {
+  width: clamp(1px, calc(100vw - 800px), 100vh);
+  height: clamp(1px, calc(100vw - 800px), 100vh);
+  margin: auto;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.SongVertex {
+  transform-origin: 50% 50%;
+
+  .ball {
+    transition: all 0.2s ease-out;
+  }
+}

@@ -1,0 +1,199 @@
+@import '../common';
+
+.PlaylistList {
+  text-align: center;
+  margin: auto;
+
+  @include responsive(xs) {
+    width: 360px;
+  }
+  @include responsive(sm) {
+    width: 750px;
+  }
+  @include responsive(md) {
+    width: 1200px;
+  }
+  @include responsive(lg) {
+    width: 1200px;
+  }
+
+  .PlaylistListEntry {
+    display: inline-block;
+    padding: 20px;
+    margin: 20px;
+    position: relative;
+    animation: 1000ms fly-in ease-out forwards;
+    opacity: 0%;
+    color: inherit;
+
+    & * {
+      transition: all 100ms ease-in-out;
+    }
+
+    div.playlistCard {
+      display: inline-block;
+      width: inherit;
+      height: inherit;
+      background-color: $meddark;
+      border-radius: 25px;
+      padding: inherit;
+      position: absolute;
+      top: 0;
+      left: 0;
+      box-shadow: 5px 5px 10px $dark;
+
+      img {
+        width: 200px;
+        height: 200px;
+      }
+
+      div.playlistInfo {
+        width: 280px;
+        height: 70px;
+        margin: 20px;
+
+        h1 {
+          font-size: 24px;
+        }
+
+        h2 {
+          font-size: 14px;
+        }
+      }
+
+      p {
+        display: none;
+
+        a {
+          color: $medlight;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      @keyframes fly-in {
+        0% {
+          opacity: 0%;
+          top: 100vh;
+        }
+        50% {
+          opacity: 0%;
+        }
+        80% {
+          top: -5vh;
+        }
+        100% {
+          opacity: 100%;
+          top: 0;
+        }
+      }
+    }
+
+    @for $i from 0 through 9 {
+      &:nth-child(10n + #{($i + 1)}) {
+        animation-delay: 50ms * $i;
+      }
+    }
+
+    &:hover {
+      transform: scale(1.2);
+      z-index: 99;
+
+      div.playlistCard {
+        background-color: $dark;
+        height: max-content;
+
+        p {
+          display: block;
+        }
+      }
+    }
+
+    @include responsive(xs) {
+      width: 320px;
+      height: max-content;
+      padding: 0;
+
+      div.playlistCard {
+        width: 260px;
+        position: relative;
+        margin: 0;
+        padding: 20px;
+
+        img {
+          width: 260px;
+          height: 260px;
+          display: block;
+        }
+
+        div.playlistInfo {
+          width: 220px;
+          padding: 0px;
+          display: block;
+          height: max-content;
+        }
+
+        p {
+          display: block;
+        }
+      }
+    }
+    @include responsive(sm) {
+      width: 500px;
+      height: 200px;
+      text-align: left;
+
+      div.playlistCard {
+        img {
+          display: inline-block;
+        }
+
+        div.playlistInfo {
+          height: 160px;
+          padding-top: 0px;
+          position: absolute;
+          display: inline-block;
+        }
+      }
+    }
+    @include responsive(md) {
+      width: 500px;
+      height: 200px;
+      text-align: left;
+
+      div.playlistCard {
+        img {
+          display: inline-block;
+        }
+
+        div.playlistInfo {
+          height: 160px;
+          padding-top: 0px;
+          position: absolute;
+          display: inline-block;
+        }
+      }
+    }
+    @include responsive(lg) {
+      width: 500px;
+      height: 200px;
+      text-align: left;
+
+      div.playlistCard {
+        img {
+          display: inline-block;
+        }
+
+        div.playlistInfo {
+          height: 160px;
+          padding-top: 0px;
+          position: absolute;
+          display: inline-block;
+        }
+      }
+    }
+  }
+}

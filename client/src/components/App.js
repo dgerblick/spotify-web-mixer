@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import './App.scss';
-import PlaylistList from '../Playlist/PlaylistList';
-import PlaylistDisplay from '../Playlist/PlaylistDisplay';
+import { PlaylistList }from './PlaylistList';
+import PlaylistDisplay from './PlaylistDisplay';
+import './index.scss';
 
 const cookies = new Cookies();
 
@@ -19,7 +19,7 @@ export default class App extends Component {
     }
     this.state = { auth_token };
 
-    axios.interceptors.request.use((config) => {
+    axios.interceptors.request.use(config => {
       if (Date.now() > this.state.auth_token.expires) {
         cookies.remove('auth_token');
         Promise.resolve(fetch('/api/refresh'));
@@ -36,7 +36,7 @@ export default class App extends Component {
     return (
       <Router className="App">
         <Switch>
-          <Route path="/playlist" component={PlaylistDisplay} />
+          <Route path="/playlists" component={PlaylistDisplay} />
           <Route path="/" component={PlaylistList} />
         </Switch>
       </Router>
