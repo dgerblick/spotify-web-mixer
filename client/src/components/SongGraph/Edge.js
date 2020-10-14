@@ -1,17 +1,13 @@
 import React from 'react';
 
 const Edge = props => {
-  let pointA = props.from.pos.x + ' ' + props.from.pos.y;
-  let pointMid =
-    (props.from.pos.x + props.to.pos.x) / 4 +
-    ' ' +
-    (props.from.pos.y + props.to.pos.y) / 4;
-  let pointB = props.to.pos.x + ' ' + props.to.pos.y;
-  let path = `M ${pointA} L ${pointB}`;
-  let randID = Math.floor(Math.random() * 0xffffffff).toString(16);
+  let x = props.to.pos.x - props.from.pos.x;
+  let y = props.to.pos.y - props.from.pos.y;
+  let xArc = x / 2 - y / 4;
+  let yArc = y / 2 - x / 4;
   return (
     <path
-      d={path}
+      d={`M ${props.from.pos.x} ${props.from.pos.y} q ${xArc} ${yArc} ${x} ${y}`}
       stroke={props.to.color}
       strokeWidth={props.strokeWidth}
       fillOpacity={0}

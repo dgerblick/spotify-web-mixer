@@ -93,7 +93,7 @@ const PlaylistDisplay = props => {
               key={key}
               track={tracks.tracks[key]}
               onMouseEnter={() => setHover(key)}
-              //onMouseLeave={() => setHover('')}
+              onMouseLeave={() => setHover('')}
             />
           ))}
         </Scrollbar>
