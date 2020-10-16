@@ -54,7 +54,7 @@ const processTracks = async tracks => {
         ...camelotBuckets[mod(track.camelot - 2, 24)],
         ...camelotBuckets[mod(2 * Math.floor(track.camelot / 2), 24)],
         ...camelotBuckets[mod(2 * Math.floor(track.camelot / 2) + 1, 24)],
-      ])
+      ].filter(key => key !== track.track.id))
   );
 
   let keys = Object.keys(trackDict);
@@ -71,6 +71,7 @@ const processTracks = async tracks => {
 const PlaylistDisplay = props => {
   const [tracks, setTracks] = useState();
   const [hover, setHover] = useState('');
+  const [click, setClick] = useState('');
 
   // Run on inital render
   useEffect(() => {
@@ -82,12 +83,14 @@ const PlaylistDisplay = props => {
       .then(setTracks);
   }, []);
 
+  const selected = click || hover;
+
   return (
     (tracks && (
-      <div className="PlaylistDisplay">
-        <SongGraph tracks={tracks} hover={hover} setHover={setHover} />
+      <div className="PlaylistDisplay" onClick={() => setClick(hover)}>
+        <SongGraph tracks={tracks} hover={selected} setHover={setHover} />
         <InfoPanel style={{ right: 0 }}>
-            <SongList tracks={tracks} hover={hover} setHover={setHover} />
+          <SongList tracks={tracks} hover={selected} setHover={setHover} />
         </InfoPanel>
       </div>
     )) ||

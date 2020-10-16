@@ -7,7 +7,6 @@
 }
 
 .SongListEntry {
-  transition: 0.5s;
   width: 340px;
   height: 100px;
   padding: 20px;
@@ -16,40 +15,85 @@
   color: $light;
   border-radius: 20px;
   position: relative;
+  font-size: 24px;
 
-  .albumCover {
-    height: 100%;
-    display: inline-block;
-  }
+  &.normal {
+    .albumCover {
+      height: 100%;
+      display: inline-block;
+    }
 
-  .songInfo {
-    display: inline-block;
-    margin: 0 20px;
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 220px;
-    font-size: 18px;
-    
-    p {
-      margin: 40px 0;
+    .songInfo {
+      display: inline-block;
+      margin: 0 20px;
       position: absolute;
-      width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .songTitle {
       top: 0;
-    }
+      height: 100%;
+      width: 220px;
 
-    .artists {
-      bottom: 0;
+      p {
+        margin: 30px 0;
+        position: absolute;
+        width: 220px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &.songTitle {
+          top: 0;
+        }
+
+        &.artists {
+          bottom: 0;
+        }
+      }
     }
   }
 
   &.hover {
-    border-radius: 0;
+    width: 300px;
+    height: max-content;
+    text-align: center;
+    padding: 40px;
+
+    .albumCover {
+      position: relative;
+      width: 100%;
+    }
+
+    .songInfo {
+      position: relative;
+      width: 100%;
+      padding: 10px 0;
+
+      p {
+        width: 100%;
+        position: relative;
+        margin: 6px;
+
+        &.artists {
+          font-size: 18px;
+        }
+
+        &.albumName {
+          font-size: 18px;
+          padding-bottom: 24px;
+        }
+
+        &.duration {
+          font-size: 14px;
+          text-align: left;
+          position: absolute;
+          bottom: 0;
+        }
+        
+        &.neighborCount {
+          font-size: 14px;
+          text-align: right;
+          position: absolute;
+          bottom: 0;
+        }
+      }
+    }
   }
 }

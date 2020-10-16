@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const SongVertex = props => {
+  const [timer, setTimer] = useState(null);
+
   return (
     <g
       className="SongVertex"
-      onMouseEnter={() => props.setHover(props.track.track.id)}
+      onMouseEnter={() => {
+        setTimer(setTimeout(() => props.setHover(props.track.track.id), 100));
+      }}
+      onMouseLeave={() => {
+        clearTimeout(timer);
+        setTimer(null);
+      }}
     >
       <circle
         id={props.track.track.id}

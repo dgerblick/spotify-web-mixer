@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import async from 'async';
 import SongVertex from './SongVertex';
-import Edge from './Edge';
+import SongEdge from './SongEdge';
 import './index.scss';
 
 const getColor = (hue, saturation, lightness) => {
@@ -83,7 +83,7 @@ const SongGraph = props => {
       {props.hover !== '' && (
         <g>
           {props.tracks.tracks[props.hover].neighbors.map(neighbor => (
-            <Edge
+            <SongEdge
               key={'edge-' + neighbor}
               from={data[props.hover]}
               to={data[neighbor]}

@@ -8,7 +8,6 @@ const SongList = props => {
 
   return (
     <Scrollbar
-      style={{ maxHeight: '100%' }}
       className="SongList"
       ref={scrollRef}
       onMouseEnter={() => setMouseOver(true)}
