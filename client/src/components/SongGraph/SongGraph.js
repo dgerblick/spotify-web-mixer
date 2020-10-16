@@ -30,41 +30,39 @@ const getColor = (hue, saturation, lightness) => {
 
 const SongGraph = props => {
   let ballRadius = Math.max(0.02, (0.5 * Math.PI) / props.tracks?.ids.count);
-  let [data] = useState(
-    (() => {
-      let data = {};
-      async.eachOf(props.tracks.ids.byCamelot, (key, index) => {
-        let fill = Math.min(
-          props.tracks.ids.count / props.targetBallDensity,
-          0.9
+  let [data] = useState(() => {
+    let data = {};
+    async.eachOf(props.tracks.ids.byCamelot, (key, index) => {
+      let fill = Math.min(
+        props.tracks.ids.count / props.targetBallDensity,
+        0.9
+      );
+      let theta = (2 * Math.PI * index) / props.tracks.ids.count;
+      let r =
+        (1 - 2 * ballRadius) *
+        Math.sqrt(
+          (fill *
+            ((index -
+              (index * (props.tracks.ids.count % props.turnAngle)) /
+                props.tracks.ids.count) %
+              props.turnAngle)) /
+            props.turnAngle +
+            (1 - fill)
         );
-        let theta = (2 * Math.PI * index) / props.tracks.ids.count;
-        let r =
-          (1 - 2 * ballRadius) *
-          Math.sqrt(
-            (fill *
-              ((index -
-                (index * (props.tracks.ids.count % props.turnAngle)) /
-                  props.tracks.ids.count) %
-                props.turnAngle)) /
-              props.turnAngle +
-              (1 - fill)
-          );
-        data[key] = {
-          color: getColor(
-            props.tracks.tracks[key].camelot / 24,
-            1,
-            props.tracks.tracks[key].features.danceability
-          ),
-          pos: {
-            x: r * Math.cos(theta),
-            y: r * Math.sin(theta),
-          },
-        };
-      });
-      return data;
-    })()
-  );
+      data[key] = {
+        color: getColor(
+          props.tracks.tracks[key].camelot / 24,
+          1,
+          props.tracks.tracks[key].features.danceability
+        ),
+        pos: {
+          x: r * Math.cos(theta),
+          y: r * Math.sin(theta),
+        },
+      };
+    });
+    return data;
+  });
 
   return (
     <svg

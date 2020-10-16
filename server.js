@@ -45,7 +45,7 @@ app.get('/api/callback', (req, res) => {
     .then(data => {
       data.data.expires = Date.now() + data.data.expires_in * 1000;
       return res
-        .cookie('auth_token', JSON.stringify(data.data))
+        .cookie('authToken', JSON.stringify(data.data))
         .redirect('http://localhost:3000');
     })
     .catch(error => res.send(error));
@@ -57,7 +57,7 @@ app.get('/api/refresh', (req, res) => {
       'https://accounts.spotify.com/api/token',
       querystring.stringify({
         grant_type: 'refresh_token',
-        refresh_token: JSON.parse(req.cookies.auth_token).refresh_token,
+        refresh_token: JSON.parse(req.cookies.authToken).refresh_token,
       }),
       {
         headers: {
@@ -73,11 +73,10 @@ app.get('/api/refresh', (req, res) => {
       data.data.expires = Date.now() + data.data.expires_in * 1000;
       data.data.refresh_token =
         data.data.refresh_token ||
-        JSON.parse(req.cookies.auth_token).refresh_token;
-      return res.cookie('auth_token', JSON.stringify(data.data)).send();
+        JSON.parse(req.cookies.authToken).refresh_token;
+      return res.send(data.data);
     })
     .catch(error => res.send(error));
-  Promise.resolve(refresh);
 });
 
 app.listen(port, () => `Server running on port ${port}`);

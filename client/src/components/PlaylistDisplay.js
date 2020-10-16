@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import async from 'async';
-import Scrollbar from 'react-scrollbars-custom';
 import { SongGraph } from './SongGraph';
-import { InfoPanel, SongEntry } from './InfoPanel';
+import { InfoPanel, SongList } from './InfoPanel';
 
 const mod = (n, m) => ((n % m) + m) % m;
 
@@ -84,21 +83,15 @@ const PlaylistDisplay = props => {
   }, []);
 
   return (
-    <div className="PlaylistDisplay">
-      {tracks && <SongGraph tracks={tracks} hover={hover} setHover={setHover} />}
-      <InfoPanel style={{ right: 0 }}>
-        <Scrollbar style={{ maxHeight: '100%' }}>
-          {tracks?.ids.byDefault.map(key => (
-            <SongEntry
-              key={key}
-              track={tracks.tracks[key]}
-              onMouseEnter={() => setHover(key)}
-              onMouseLeave={() => setHover('')}
-            />
-          ))}
-        </Scrollbar>
-      </InfoPanel>
-    </div>
+    (tracks && (
+      <div className="PlaylistDisplay">
+        <SongGraph tracks={tracks} hover={hover} setHover={setHover} />
+        <InfoPanel style={{ right: 0 }}>
+            <SongList tracks={tracks} hover={hover} setHover={setHover} />
+        </InfoPanel>
+      </div>
+    )) ||
+    null
   );
 };
 

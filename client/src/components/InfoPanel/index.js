@@ -1,2 +1,2 @@
 export { default as InfoPanel } from './InfoPanel'
-export { default as SongEntry } from './SongEntry'
+export { default as SongList } from './SongList'
