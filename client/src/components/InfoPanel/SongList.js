@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import Scrollbar from 'react-scrollbars-custom';
-import SongListEntry from './SongListEntry';
+import SongListEntry from './SongDisplay';
 
 const SongList = props => {
   const scrollRef = useRef(null);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const SongListEntry = props => {
+const SongDisplay = props => {
   const myRef = useRef(null);
   const [timer, setTimer] = useState(null);
 
@@ -14,9 +14,11 @@ const SongListEntry = props => {
 
   return (
     <div
-      className={'SongListEntry' + (props.hover ? ' hover' : ' normal')}
+      className={
+        'SongDisplay' + (props.hover || props.large ? ' large' : ' small')
+      }
       onMouseEnter={() => {
-        setTimer(setTimeout(() => props.setHover(props.track.track.id), 100));
+        setTimer(setTimeout(() => props.setHover(props.track?.track.id), 100));
       }}
       onMouseLeave={() => {
         clearTimeout(timer);
@@ -27,13 +29,13 @@ const SongListEntry = props => {
     >
       <img
         className="albumCover"
-        src={props.track.track.album.images[0]?.url}
-        alt={props.track.track.name}
+        src={props.track?.track.album.images[0]?.url}
+        alt={props.track?.track.name}
       />
       <div className="songInfo">
         <p className="songTitle">{props.track.track.name}</p>
         <p className="artists">
-          {props.track.track.artists.map(e => e.name).join(', ')}
+          {props.track?.track.artists.map(e => e.name).join(', ')}
         </p>
         {props.hover && (
           <div className="hidden">
@@ -50,8 +52,16 @@ const SongListEntry = props => {
           </div>
         )}
       </div>
+      {props.children}
     </div>
   );
 };
 
-export default SongListEntry;
+SongDisplay.defaultProps = {
+  hover: false,
+  setHover: () => {},
+  mouseOver: false,
+  large: false,
+};
+
+export default SongDisplay;

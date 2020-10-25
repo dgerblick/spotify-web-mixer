@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import async from 'async';
 import { SongGraph } from './SongGraph';
-import { InfoPanel, SongList } from './InfoPanel';
+import { InfoPanel, NowPlaying, SongList } from './InfoPanel';
 
 const mod = (n, m) => ((n % m) + m) % m;
 
@@ -70,8 +70,14 @@ const processTracks = async tracks => {
 
 const PlaylistDisplay = props => {
   const [tracks, setTracks] = useState();
-  const [hover, setHover] = useState('');
+  const [hover, _setHover] = useState('');
   const [click, setClick] = useState('');
+
+  const setHover = newHover => {
+    if (newHover === '' || tracks.ids.byDefault.includes(newHover)) {
+      _setHover(newHover)
+    }
+  }
 
   // Run on inital render
   useEffect(() => {
@@ -88,6 +94,9 @@ const PlaylistDisplay = props => {
   return (
     (tracks && (
       <div className="PlaylistDisplay" onClick={() => setClick(hover)}>
+        <InfoPanel>
+          <NowPlaying setHover={setHover} />
+        </InfoPanel>
         <SongGraph tracks={tracks} hover={selected} setHover={setHover} />
         <InfoPanel style={{ right: 0 }}>
           <SongList tracks={tracks} hover={selected} setHover={setHover} />

@@ -6,18 +6,18 @@
   position: absolute;
 }
 
-.SongListEntry {
-  width: 340px;
+.SongDisplay {
+  width: 320px;
   height: 100px;
   padding: 20px;
-  margin: 20px 0;
+  margin: 20px;
   background-color: $dark;
   color: $light;
   border-radius: 20px;
   position: relative;
   font-size: 24px;
 
-  &.normal {
+  &.small {
     .albumCover {
       height: 100%;
       display: inline-block;
@@ -29,12 +29,12 @@
       position: absolute;
       top: 0;
       height: 100%;
-      width: 220px;
+      width: 200px;
 
       p {
         margin: 30px 0;
         position: absolute;
-        width: 220px;
+        width: 100%;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -50,8 +50,8 @@
     }
   }
 
-  &.hover {
-    width: 300px;
+  &.large {
+    width: 280px;
     height: max-content;
     text-align: center;
     padding: 40px;
@@ -86,13 +86,32 @@
           position: absolute;
           bottom: 0;
         }
-        
+
         &.neighborCount {
           font-size: 14px;
           text-align: right;
           position: absolute;
           bottom: 0;
         }
+      }
+    }
+  }
+}
+
+.NowPlaying {
+  .SongDisplay {
+    .progressBar {
+      width: 100%;
+      font-size: 14px;
+      line-height: 0;
+
+      .progress {
+        float: left;
+        position: relative;
+      }
+
+      .duration {
+        float: right;
       }
     }
   }
