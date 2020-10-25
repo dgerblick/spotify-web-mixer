@@ -89,7 +89,8 @@ const PlaylistDisplay = props => {
       .then(setTracks);
   }, []);
 
-  const selected = click || hover;
+  //const selected = click || hover;
+  const selected = hover;
 
   return (
     (tracks && (

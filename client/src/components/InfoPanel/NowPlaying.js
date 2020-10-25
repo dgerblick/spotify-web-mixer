@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SongDisplay from './SongDisplay';
 import Progress from 'react-progressbar';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import PauseIcon from '@material-ui/icons/Pause';
+import SkipNextIcon from '@material-ui/icons/SkipNext';
+import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 
 const NowPlaying = props => {
   const [playing, setPlaying] = useState();
@@ -44,6 +48,31 @@ const NowPlaying = props => {
                 .toString()
                 .padStart(2, '0')}
             </p>
+          </div>
+          <div className="controls">
+            <SkipPreviousIcon
+              onClick={() =>
+                axios.post('https://api.spotify.com/v1/me/player/previous')
+              }
+            />
+            {playing.is_playing ? (
+              <PauseIcon
+                onClick={() =>
+                  axios.put('https://api.spotify.com/v1/me/player/pause')
+                }
+              />
+            ) : (
+              <PlayArrowIcon
+                onClick={() =>
+                  axios.put('https://api.spotify.com/v1/me/player/play')
+                }
+              />
+            )}
+            <SkipNextIcon
+              onClick={() =>
+                axios.post('https://api.spotify.com/v1/me/player/next')
+              }
+            />
           </div>
         </SongDisplay>
       )}

@@ -7,26 +7,6 @@ import PlaylistDisplay from './PlaylistDisplay';
 import './index.scss';
 
 const App = () => {
-  //let [authToken, setAuthToken] = useState(
-  //  (cookie => {
-  //    let authToken = cookies.get(cookie);
-  //    if (authToken === undefined) {
-  //      window.location = 'http://localhost:3001/api/auth';
-  //    } else {
-  //      Promise.resolve(fetch('/api/refresh'));
-  //      authToken = cookies.get(cookie);
-  //    }
-  //    return authToken;
-  //  })('auth_token')
-  //);
-  //
-  //useEffect(() => {
-  //  console.log(authToken);
-  //  axios.interceptors.request.use(config => {
-  //    config.headers['Authorization'] = `Bearer ${authToken.access_token}`;
-  //    return config;
-  //  });
-  //}, [authToken]);
   const [cookies, setCookies] = useCookies(['authToken']);
   const authToken = cookies['authToken'];
 
