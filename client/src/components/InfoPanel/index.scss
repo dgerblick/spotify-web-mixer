@@ -2,8 +2,13 @@
 
 .InfoPanel {
   height: 100%;
-  width: 400px;
+  width: 410px;
   position: absolute;
+}
+
+.SongList {
+  width: 400px;
+  padding-right: 20px;
 }
 
 .SongDisplay {
@@ -169,6 +174,9 @@
 }
 
 .ShowHide {
+  width: 400px;
+  padding-right: 20px;
+
   .element {
     background-color: $dark;
     margin: 20px;

@@ -1,15 +1,12 @@
-import React, { useState, useRef } from 'react';
-import Scrollbar from 'react-scrollbars-custom';
+import React, { useState } from 'react';
 import SongListEntry from './SongDisplay';
 
 const SongList = props => {
-  const scrollRef = useRef(null);
   const [mouseOver, setMouseOver] = useState(false);
 
   return (
-    <Scrollbar
+    <div
       className="SongList"
-      ref={scrollRef}
       onMouseEnter={() => setMouseOver(true)}
       onMouseLeave={() => setMouseOver(false)}
     >
@@ -18,12 +15,12 @@ const SongList = props => {
           key={key}
           track={props.tracks.tracks[key]}
           hover={props.hover === key}
-          scrollBar={scrollRef.current}
+          scrollBar={props.scrollRef.current}
           setHover={props.setHover}
           mouseOver={mouseOver}
         />
       ))}
-    </Scrollbar>
+    </div>
   );
 };
 

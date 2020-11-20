@@ -106,10 +106,15 @@ const PlaylistDisplay = props => {
               uri={playlist?.uri}
               name="Now Playing"
             />
+            <NowPlaying
+              setHover={setHover}
+              uri={playlist?.uri}
+              name="Also Now Playing"
+            />
           </ShowHide>
         </InfoPanel>
         <SongGraph tracks={tracks} hover={selected} setHover={setHover} />
-        <InfoPanel style={{ right: 0 }}>
+        <InfoPanel right>
           <SongList tracks={tracks} hover={selected} setHover={setHover} />
         </InfoPanel>
       </div>
