@@ -99,9 +99,7 @@
 }
 
 .NowPlaying {
-  background-color: $dark;
   color: $light;
-  margin: 20px;
   border-radius: 20px;
   position: relative;
 
@@ -166,6 +164,49 @@
       font-size: 24px;
       line-height: 40px;
       vertical-align: top;
+    }
+  }
+}
+
+.ShowHide {
+  .element {
+    background-color: $dark;
+    margin: 20px;
+    border-radius: 20px;
+
+    .title {
+      height: 60px;
+
+      p {
+        display: inline-block;
+        margin: 20px;
+        font-size: 18px;
+        line-height: 20px;
+        vertical-align: top;
+      }
+
+      .iconButton {
+        width: 40px;
+        height: 40px;
+        margin: 10px;
+        border-radius: 20px;
+        float: right;
+        
+
+        svg {
+          font-size: 40px;
+        }
+
+        &:hover {
+          background-color: $light;
+          color: $dark;
+          transition: 100ms;
+        }
+      }
+    }
+
+    .content {
+      border-top: solid 2px $meddark;
     }
   }
 }
