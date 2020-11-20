@@ -21,10 +21,24 @@ const App = () => {
 
   const [ready, setReady] = useState(false);
   useEffect(() => {
-    axios.interceptors.request.use(config => {
-      config.headers['Authorization'] = `Bearer ${authToken.access_token}`;
-      return config;
-    });
+    axios.interceptors.request.use(
+      config => {
+        config.headers['Authorization'] = `Bearer ${authToken.access_token}`;
+        return config;
+      },
+      err => {
+        if (err.response.status >= 500) {
+          return axios.request({
+            method: err.config.method,
+            url: err.config.url,
+            params: err.config.params,
+            withCredentials: true,
+          });
+        } else {
+          throw err;
+        }
+      }
+    );
     setReady(true);
   }, []);
 

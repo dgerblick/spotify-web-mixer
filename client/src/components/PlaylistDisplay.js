@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import async from 'async';
 import { SongGraph } from './SongGraph';
-import { InfoPanel, NowPlaying, SongList } from './InfoPanel';
+import { InfoPanel, NowPlaying, SongList, DeviceSelector } from './InfoPanel';
 
 const mod = (n, m) => ((n % m) + m) % m;
 
@@ -69,6 +69,7 @@ const processTracks = async tracks => {
 };
 
 const PlaylistDisplay = props => {
+  const [playlist, setPlaylist] = useState();
   const [tracks, setTracks] = useState();
   const [hover, _setHover] = useState('');
   const [click, setClick] = useState('');
@@ -83,20 +84,23 @@ const PlaylistDisplay = props => {
   useEffect(() => {
     axios
       .get('https://api.spotify.com/v1' + props.location.pathname)
-      .then(res => res.data.tracks)
+      .then(res => {
+        setPlaylist(res.data);
+        return res.data.tracks;
+      })
       .then(getTracks)
       .then(processTracks)
       .then(setTracks);
   }, []);
 
-  //const selected = click || hover;
-  const selected = hover;
+  const selected = click || hover;
+  //const selected = hover;
 
   return (
     (tracks && (
       <div className="PlaylistDisplay" onClick={() => setClick(hover)}>
         <InfoPanel>
-          <NowPlaying setHover={setHover} />
+          <NowPlaying setHover={setHover} uri={playlist?.uri} />
         </InfoPanel>
         <SongGraph tracks={tracks} hover={selected} setHover={setHover} />
         <InfoPanel style={{ right: 0 }}>

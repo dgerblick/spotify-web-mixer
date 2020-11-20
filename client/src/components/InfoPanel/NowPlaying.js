@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SongDisplay from './SongDisplay';
 import Progress from 'react-progressbar';
+import DeviceSelector from './DeviceSelector';
+
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
@@ -12,6 +14,7 @@ import RepeatOneIcon from '@material-ui/icons/RepeatOne';
 
 const NowPlaying = props => {
   const [playing, setPlaying] = useState();
+  const [device, setDevice] = useState();
 
   useEffect(() => {
     axios
@@ -27,9 +30,17 @@ const NowPlaying = props => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (device?.id.indexOf('.') === -1 && playing?.context?.uri === props.uri)
+      axios.put('https://api.spotify.com/v1/me/player', {
+        device_ids: [device.id],
+      });
+  }, [device]);
+
   return (
     <div className="NowPlaying">
-      {playing && (
+      <DeviceSelector setDevice={setDevice} />
+      {playing?.context?.uri === props.uri ? (
         <SongDisplay
           large
           track={{ track: playing.item }}
@@ -60,16 +71,21 @@ const NowPlaying = props => {
             <ShuffleIcon
               className={playing.shuffle_state ? 'selected' : ''}
               onClick={() =>
-                axios.put(
-                  'https://api.spotify.com/v1/me/player/shuffle?state=' +
-                    !playing.shuffle_state
-                )
+                axios.put('https://api.spotify.com/v1/me/player/shuffle', {
+                  state: !playing.shuffle_state,
+                })
               }
             />
             <SkipPreviousIcon
-              onClick={() =>
-                axios.post('https://api.spotify.com/v1/me/player/previous')
-              }
+              onClick={() => {
+                console.log(playing.item.duration_ms);
+                if (playing.progress_ms < props.msPrev)
+                  axios.post('https://api.spotify.com/v1/me/player/previous');
+                else
+                  axios.put(
+                    'https://api.spotify.com/v1/me/player/seek?position_ms=0'
+                  );
+              }}
             />
             {playing.is_playing ? (
               <PauseIcon
@@ -111,6 +127,22 @@ const NowPlaying = props => {
             )}
           </div>
         </SongDisplay>
+      ) : (
+        <div className="startPlaying">
+          <PlayArrowIcon
+            onClick={() => {
+              if (device?.id.indexOf('.') === -1)
+                axios.put(
+                  'https://api.spotify.com/v1/me/player/play?device_id=' +
+                    device.id,
+                  {
+                    context_uri: props.uri,
+                  }
+                );
+            }}
+          />
+          <p>Start Playing</p>
+        </div>
       )}
     </div>
   );
@@ -118,6 +150,7 @@ const NowPlaying = props => {
 
 NowPlaying.defaultProps = {
   updateRate: 1000,
+  msPrev: 5000,
 };
 
 export default NowPlaying;

@@ -99,7 +99,16 @@
 }
 
 .NowPlaying {
+  background-color: $dark;
+  color: $light;
+  margin: 20px;
+  border-radius: 20px;
+  position: relative;
+
   .SongDisplay {
+    background-color: transparent;
+    margin: 0;
+
     .progressBar {
       width: 100%;
       font-size: 14px;
@@ -124,13 +133,67 @@
         font-size: 40px;
         margin: 0 calc(40px / 5);
         border-radius: 20px;
-        
-        &:hover, &.selected {
+
+        &:hover,
+        &.selected {
           background-color: $light;
           color: $dark;
           transition: 100ms;
         }
       }
+    }
+  }
+
+  .startPlaying {
+    padding: 20px;
+    height: 40px;
+
+    svg {
+      font-size: 40px;
+      display: inline-block;
+      border-radius: 20px;
+
+      &:hover {
+        background-color: $light;
+        color: $dark;
+        transition: 100ms;
+      }
+    }
+
+    p {
+      display: inline-block;
+      margin: 0 20px;
+      font-size: 24px;
+      line-height: 40px;
+      vertical-align: top;
+    }
+  }
+}
+
+.DeviceSelector {
+  width: 320px;
+  padding: 0 20px;
+  padding-top: 20px;
+  height: 40px;
+
+  svg {
+    font-size: 40px;
+    float: left;
+  }
+
+  .selector {
+    width: 260px;
+    height: 40px;
+    float: right;
+    line-height: 40px;
+
+    .react-dropdown-select-content {
+      height: 40px;
+    }
+
+    .react-dropdown-select-item {
+      color: $dark;
+      line-height: 20px;
     }
   }
 }
