@@ -19,11 +19,25 @@ const SongVertex = props => {
         className="ball"
         cx={props.data.pos.x}
         cy={props.data.pos.y}
-        r={props.radius * (props.hover === props.track.track.id ? 2 : 1)}
+        r={
+          props.radius *
+          Math.max(
+            props.hover === props.track.track.id ? props.hoverMultiplier : 1,
+            props.selected.songs.includes(props.track.track.id)
+              ? props.selectedMultiplier
+              : 1
+          )
+        }
         fill={props.data.color}
       />
     </g>
   );
+};
+
+SongVertex.defaultProps = {
+  radius: 1,
+  hoverMultiplier: 2,
+  selectedMultiplier: 1.5,
 };
 
 export default SongVertex;

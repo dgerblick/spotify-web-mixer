@@ -37,6 +37,18 @@ const NowPlaying = props => {
       });
   }, [device]);
 
+
+  useEffect(() => {
+    console.log('useEffect');
+    if (playing?.context?.uri === props.uri) {
+      props.setSelected({
+        songs: [playing.item.id],
+        edges: props.selected.edges,
+      })
+    }
+  }, [playing?.item?.id])
+
+
   return (
     <div className="NowPlaying">
       <DeviceSelector setDevice={setDevice} />
@@ -44,7 +56,6 @@ const NowPlaying = props => {
         <SongDisplay
           large
           track={{ track: playing.item }}
-          setHover={props.setHover}
         >
           <div className="progressBar">
             <Progress

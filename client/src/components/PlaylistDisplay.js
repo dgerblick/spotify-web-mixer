@@ -73,8 +73,7 @@ const PlaylistDisplay = props => {
   const [playlist, setPlaylist] = useState();
   const [tracks, setTracks] = useState();
   const [hover, _setHover] = useState('');
-  const [click, setClick] = useState('');
-  const [selectedEdges, setSelectedEdges] = useState([]);
+  const [selected, setSelected] = useState({ songs: [], edges: [] });
 
   const setHover = newHover => {
     if (newHover === '' || tracks.ids.byDefault.includes(newHover)) {
@@ -95,32 +94,29 @@ const PlaylistDisplay = props => {
       .then(setTracks);
   }, []);
 
-  //const selected = click || hover;
-  const selected = hover;
-
   return (
     (tracks && (
-      <div className="PlaylistDisplay" onClick={() => setClick(hover)}>
+      <div className="PlaylistDisplay">
         <InfoPanel>
           <ShowHide defaults={['Now Playing', 'Smart Shuffler']}>
             <NowPlaying
               setHover={setHover}
               uri={playlist?.uri}
               name="Now Playing"
-              selectedEdges={selectedEdges}
-              setSelectedEdges={setSelectedEdges}
+              selected={selected}
+              setSelected={setSelected}
             />
             <SmartShuffler name="Smart Shuffler" tracks={tracks} />
           </ShowHide>
         </InfoPanel>
         <SongGraph
           tracks={tracks}
-          hover={selected}
+          hover={hover}
           setHover={setHover}
-          selectedEdges={selectedEdges}
+          selected={selected}
         />
         <InfoPanel right>
-          <SongList tracks={tracks} hover={selected} setHover={setHover} />
+          <SongList tracks={tracks} hover={hover} setHover={setHover} />
         </InfoPanel>
       </div>
     )) ||

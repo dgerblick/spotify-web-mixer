@@ -64,22 +64,28 @@ const SongGraph = props => {
     return data;
   });
 
+  const renderVertex = id => (
+    <SongVertex
+      key={id}
+      track={props.tracks.tracks[id]}
+      data={data[id]}
+      radius={ballRadius}
+      hover={props.hover}
+      setHover={props.setHover}
+      selected={props.selected}
+    />
+  );
+
   return (
     <svg
       className="SongGraph"
       viewBox="-1 -1 2 2"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {props.tracks.ids.byCamelot.map(key => (
-        <SongVertex
-          key={key}
-          track={props.tracks.tracks[key]}
-          data={data[key]}
-          radius={ballRadius}
-          hover={props.hover}
-          setHover={props.setHover}
-        />
-      ))}
+      {props.tracks.ids.byCamelot
+        .filter(e => !props.selected.songs.includes(e))
+        .map(renderVertex)}
+      {props.selected.songs.map(renderVertex)}
       {props.hover !== '' && (
         <g>
           {props.tracks.tracks[props.hover].neighbors.map(neighbor => (
