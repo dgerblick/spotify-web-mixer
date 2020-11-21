@@ -16,7 +16,7 @@ const App = () => {
   useEffect(() => {
     setTimeout(() => {
       axios.get('/api/refresh').then(res => setCookies('authToken', res.data));
-    }, Math.max(authToken.expires - Date.now(), 0));
+    }, Math.max(0.9 * (authToken.expires - Date.now()), 0));
   }, [authToken]);
 
   const [ready, setReady] = useState(false);

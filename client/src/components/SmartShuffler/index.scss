@@ -1,0 +1,19 @@
+@import '../common';
+
+.SmartShuffler {
+  padding: 20px;
+
+  .startStopButton {
+    font-size: 28px;
+    height: 40px;
+    width: 100%;
+    background-color: $light;
+    color: $dark;
+    text-align: center;
+    border-radius: 20px;
+
+    &:hover {
+      background-color: $medlight;
+    }
+  }
+}

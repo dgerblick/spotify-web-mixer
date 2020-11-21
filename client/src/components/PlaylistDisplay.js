@@ -3,7 +3,7 @@ import axios from 'axios';
 import async from 'async';
 import { SongGraph } from './SongGraph';
 import { InfoPanel, NowPlaying, SongList, ShowHide } from './InfoPanel';
-import { SmartShuffler } from './SmartShuffler'
+import { SmartShuffler } from './SmartShuffler';
 
 const mod = (n, m) => ((n % m) + m) % m;
 
@@ -74,6 +74,7 @@ const PlaylistDisplay = props => {
   const [tracks, setTracks] = useState();
   const [hover, _setHover] = useState('');
   const [click, setClick] = useState('');
+  const [selectedEdges, setSelectedEdges] = useState([]);
 
   const setHover = newHover => {
     if (newHover === '' || tracks.ids.byDefault.includes(newHover)) {
@@ -94,23 +95,30 @@ const PlaylistDisplay = props => {
       .then(setTracks);
   }, []);
 
-  const selected = click || hover;
-  //const selected = hover;
+  //const selected = click || hover;
+  const selected = hover;
 
   return (
     (tracks && (
       <div className="PlaylistDisplay" onClick={() => setClick(hover)}>
         <InfoPanel>
-          <ShowHide defaults={['Now Playing']}>
+          <ShowHide defaults={['Now Playing', 'Smart Shuffler']}>
             <NowPlaying
               setHover={setHover}
               uri={playlist?.uri}
               name="Now Playing"
+              selectedEdges={selectedEdges}
+              setSelectedEdges={setSelectedEdges}
             />
-            <SmartShuffler name="Smart Shuffler" />
+            <SmartShuffler name="Smart Shuffler" tracks={tracks} />
           </ShowHide>
         </InfoPanel>
-        <SongGraph tracks={tracks} hover={selected} setHover={setHover} />
+        <SongGraph
+          tracks={tracks}
+          hover={selected}
+          setHover={setHover}
+          selectedEdges={selectedEdges}
+        />
         <InfoPanel right>
           <SongList tracks={tracks} hover={selected} setHover={setHover} />
         </InfoPanel>

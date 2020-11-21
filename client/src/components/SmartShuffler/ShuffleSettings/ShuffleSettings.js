@@ -1,7 +1,5 @@
 import React from 'react';
 import SettingsList from './SettingsList';
-import SettingsToggle from './SettingsToggle';
-import SettingsValueInRange from './SettingsValueInRange';
 import './index.scss';
 
 const ShuffleSettings = props => {
@@ -15,27 +13,6 @@ const ShuffleSettings = props => {
       />
     </div>
   );
-};
-
-ShuffleSettings.defaultProps = {
-  settings: {
-    name: 'Settings',
-    value: {
-      enable: {
-        name: 'Enable',
-        value: false,
-        type: SettingsToggle,
-      },
-      minQueueSize: {
-        name: 'Minimum Queue Size',
-        value: 10,
-        type: SettingsValueInRange,
-        min: 0,
-        max: 50,
-      },
-    },
-    type: SettingsList,
-  },
 };
 
 export default ShuffleSettings;
