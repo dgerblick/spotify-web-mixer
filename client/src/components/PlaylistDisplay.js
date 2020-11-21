@@ -3,6 +3,7 @@ import axios from 'axios';
 import async from 'async';
 import { SongGraph } from './SongGraph';
 import { InfoPanel, NowPlaying, SongList, ShowHide } from './InfoPanel';
+import { SmartShuffler } from './SmartShuffler'
 
 const mod = (n, m) => ((n % m) + m) % m;
 
@@ -106,11 +107,7 @@ const PlaylistDisplay = props => {
               uri={playlist?.uri}
               name="Now Playing"
             />
-            <NowPlaying
-              setHover={setHover}
-              uri={playlist?.uri}
-              name="Also Now Playing"
-            />
+            <SmartShuffler name="Smart Shuffler" />
           </ShowHide>
         </InfoPanel>
         <SongGraph tracks={tracks} hover={selected} setHover={setHover} />
